@@ -85,7 +85,7 @@ The e-speak is selected as the robot speech synthesis software which uses a \dq{
 
 \subsection{Object Recognition}
 
-In order to extract interested objects from the background plane the following Euclidean cluster extraction algorithm\cite{ece}\cite{rudu.thesis} is used. By doing this, the cluster of objects with HSV and depth data is obtained from Kinect device. Histogram of objects is processed on order to recognize the ready-learned colors. During that process, SURF algorithm is also used to recognize pattern of the object. Finally, the combination of two results of both processes can be done by using threshold to decision where object belong as shown in Fig.\ref{fig:object_recog} .
+We develop this perception using both RGB image and depth image together. For localization approach, we use depth image using Point Cloud Library (PCL) for extracting the object from the background screen using Euclidean Clustering Extraction (ECE). After getting the position of the object, we remap the object position from 3D space to the pixel of RGB image for processing the recognition in the RGB domain. In image domain, descriptor of the object image are extracted using Speeded Up Robust Features (SURF), and will be classified using the predefined model creating with k-Nearest Neighbor Naive Bayes.
 
 \begin{figure}
 \centering
