@@ -67,7 +67,15 @@ The second layer is the robot body. The robot body can be moved along vertical a
 \end{figure}
 
 \section{Software Architecture}
-All high level software is running on ROS (Robot OS). The high level architecture can be divided into 3 separated modules as Fig.\ref{fig:soft_arc} . The input information comes from 3 sources which are data from laser length finder, sound from microphone and color and depth picture captured by Kinect.
+Software system of our robot is divided into many modules with specific functionality, for example,
+object recognition module and manipulation module. The communication between modules is implemented 
+by using Robot Operating System(ROS). The modules can be organized into three different layers:\textit{perception layer}, \textit{control layer} and \textit{task layer}.
+
+\textit{Perception layer} consist of modules about robot perception. Object recognition, Speech recognition and Localization, for instance. Modules in this layer collect data from sensors, i.e. laser range finder, microphone and Kinect, to perform higher-level algorithms in order to identify state of the environment. Output of this layer is intermediate data for \textit{task layer}
+
+\textit{Task layer} control robot's behaviour to solve complicated task.
+
+When \textit{Task layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms.
 
 \begin{figure}
 \centering
@@ -75,11 +83,9 @@ All high level software is running on ROS (Robot OS). The high level architectur
 \label{fig:soft_arc}
 \end{figure}
 
-Our robot is based on the ROS (Robot Operating System), which is commonly used in many robot applications. In our design, we divide the processing unit into many separated modules which each module communicates by using ROS libraries. The advantage of being separated modules is to be convenient to work with.
-
 \subsection{Voice System}
 
-The pocketsphinx base on CMUSphinx speech recognizer is selected as the robot speech recognition tool. It uses gstreamer to automatically split the incoming audio into utterances to be recognized. Currently, the recognizer requires a language model and dictionary file. These can be automatically built from a corpus of sentences using the Online Sphinx Knowledge Base Tool.
+Speech recognition is implemented by using \textit{pocketsphinx} base on \textit{CMUSphinx} speech recognition toolkit. The incoming audio will be split into utterances and converted into sequence of words. The system require language model and dictionary which can create from words and sentences corpus,that we generate specifically for each task, by using Online Sphinx Base Tool.
 
 The e-speak is selected as the robot speech synthesis software which uses a \dq{formant synthesis} method. This allows many languages to be provided in a small size. The speech is clear, and can be used at high speeds, but it is not as natural or smooth as larger synthesizers which are based on human speech recordings.
 
