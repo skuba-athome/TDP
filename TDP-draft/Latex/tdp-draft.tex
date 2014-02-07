@@ -126,13 +126,13 @@ To pursue human, robot need two important abilities which is detection human and
 
 \section{Motion Control and Planning}
 
-\subsection{Motor Control Module}
+\subsection{Motor Control System}
 
-Motor control module is composed of a collection of embedded controllers which executes the low level motor control loop, communication and debugging. First controller is base motor controller. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. And the communication between controller and computer is established by using RS232. Furthermore, there is different controller to control arm motor. To interact with it, RS485 standard is selected and build in to the controller. For convenient usage, second controller also have PID-Torque control, torque limitation and orientation adjustment\cite{con_arm}. 
+Motor control system is composed of a collection of embedded controllers which executes the low level motor control loop, communication and debugging. First controller is base motor controller. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. And the communication between controller and computer is established by using RS232. Furthermore, there is different controller to control arm motor. To interact with it, RS485 standard is selected and build in to the controller. For convenient usage, second controller also have PID-Torque control, torque limitation and orientation adjustment\cite{con_arm}. 
 
 \subsection{Localization and Path Planning}
 
-Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. For satisfy localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map which is predefine or dynamical construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
+Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. To satisfy localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map which is predefine or dynamical construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
 
 Predefine and dynamical map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}.
 
