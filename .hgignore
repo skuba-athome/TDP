@@ -1,0 +1,8 @@
+syntax: glob
+
+*.aux
+*.log
+*.gz
+*.dvi
+*.toc
+*~
