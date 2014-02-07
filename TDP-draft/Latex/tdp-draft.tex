@@ -10,6 +10,7 @@
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{array}
+\usepackage{graphicx}
 
 \newcommand{\dq}[1]{``#1''}
 \newcommand{\md}[1]{\(#1\)}
@@ -21,7 +22,9 @@
 \author{Kanjanapan Sukvichai
 \and Krit Chaiso
 \and Thanakorn Panyapiang
-\and \\ Suppawit Inhorm
+\and Jaktip Yordsri
+\and Suppawit Inhorm
+\and Tachin 
 \and Sutinai Tanalerkchai
 }
 
@@ -90,8 +93,13 @@ Speech recognition is implemented by using \textit{pocketsphinx} base on \textit
 The e-speak is selected as the robot speech synthesis software which uses a \dq{formant synthesis} method. This allows many languages to be provided in a small size. The speech is clear, and can be used at high speeds, but it is not as natural or smooth as larger synthesizers which are based on human speech recordings.
 
 \subsection{Object Recognition}
+    In field of recognition, the most essential are localization and recognition, because they are deeply associated to each other. Recognition requires localization; and reversely, localization requires recognition.
+    
+Improving the precision of recognition module, we enhance localization approach by using both RGB image and depth image together. For localization process, we apply depth information from OpenNI Library for extracting objects from the background scene using Euclidean Clustering Extraction (ECE). Additionally, we use some explicit constrains, e.g., table plane boundary and manipulator work space limitation, to distinguish the cloud that is definitely not the interested object such as, the objects that are beneath the table. After computing the centroid of extracted point cloud, we transform the object's border using the focal length equation from 3D space to RGB domain. From object's border, the segmented image is obtained. In image domain, descriptors of the segmented image are extracted using Speeded Up Robust Features (SURF), and can be classified by recognition process.
 
-We develop this perception using both RGB image and depth image together. For localization approach, we use depth image using Point Cloud Library (PCL) for extracting the object from the background screen using Euclidean Clustering Extraction (ECE). After getting the position of the object, we remap the object position from 3D space to the pixel of RGB image for processing the recognition in the RGB domain. In image domain, descriptor of the object image are extracted using Speeded Up Robust Features (SURF), and will be classified using the predefined model creating with k-Nearest Neighbor Naive Bayes.
+About recognition process, initially, we cluster the extracted descriptors using K-means clustering. Next, the histogram is created by counting the number of descriptors in each cluster. Finally, the histogram used as the parameter is passed into SVM model which is supervised learning for classification the object category.
+
+The performance of this approach gains us the higher efficiency of both localization and recognition. First of all, localization using depth information has the acceptable accuracy for scoping the object boundary from the background scene. Lastly, recognition process has a significance of accuracy in classification comparing to our old method. Finally, result of this module is shown in Fig.\ref{fig:object_recog}.
 
 \begin{figure}
 \centering
@@ -107,135 +115,42 @@ gesture recognition algorithm.
 
 \subsection{Face Recognition}
 
-The Haar like Features Cascade is used to detect faces. Moreover, we modified the input data by using of depth data from Kinect sensor in order to cut the background plane. In face recognition, simple eigenface technique is used.
+Face recognition is basic ability for service robot to learn and classify human. For example, Serving meal and beverage. To complete this task, the robot has to memorize who is owner of the order. To perform face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation. This algorithm consist of 
 
 \subsection{People Detection and Tracking}
 
-People tracking can be done by using a laser scanner as a robot sensor. By using the Maximum likelihood approach algorithm associate data in the validation region and using Kalman filter, that has a constant velocity model system, as a filter. We can determine the position of the person.
-
-After grabbing a person current position, the position will be redirect to Path planner module to locate the path from robot to the person. Meanwhile to solve the problem of robot moving to close to the obstacles, we have to modify the path with elastic band approach to make the path as center as possible.
+For following person, robot need two important ability which is detection and tracking the interested person. Our development in people detection use the RGB-D, point cloud, data as the input for performing the clustering of people. Avoiding the problem of detection such as merging cloud of more than one person or occlusion, sub-clustering of people's head is considered to use as the representation of each person. Another component of this process, tracking is implemented based on the Likelihoods computation, Joint likelihood data association, and HOG-based initializer.
 
 \section{Motion Control and Planning}
 
 \subsection{Motor Control Module}
 
-Motor control module is based on Spartan 3 FPGA from Xilinx. The FPGA contains a soft 32-bit microprocessor core and peripherals. This embedded processor executes the low level motor control loop, communication and debugging. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. 
+Motor control module is composed of a collection of embedded controllers which executes the low level motor control loop, communication and debugging. First controller is base motor controller. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. And the communication between controller and computer is established by using RS232. Furthermore, there is different controller to control arm motor. To interact with it, RS485 standard is selected and build in to the controller. For convenient usage, second controller also have PID-Torque control, torque limitation and orientation adjustment\cite{con_arm}. 
 
-\begin{figure}
-\centering
-\caption{Top view of Mecanum-wheel robot}
-\label{fig:mecanum-wheel}
-\end{figure}
+\subsection{Localization and Path Planning}
 
-In order to control a robot to move into the environment and avoid the obstacles, the robot model has to be considered. The robot model can be directly derived from the velocity relationship form each wheel to robot center (robot frame). Command velocity is the command input that high level software sends to the embedded system in order to change the robot position. Wheels velocities are converted from the command velocity by using kinetic Eq.\ref{eq:1}. The robot kinetic is derived from robot driving mechanism as shown in Fig.\ref{fig:mecanum-wheel} .
+Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. For satisfy localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map which is predefine or dynamical construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
 
-\begin{equation}
-\label{eq:1}
-\zeta_{wheel} = \psi\cdot\zeta_{cmd}
-\end{equation}
+Predefine and dynamical map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}.
 
-\begin{tabular}{l C{3.5in}}
-
-Where, & 
-\md{
-\zeta_{wheel} = \begin{bmatrix}
-\dot{\phi}_{1} & \dot{\phi}_{2} & \dot{\phi}_{3} & \dot{\phi}_{3}
-\end{bmatrix}^{T}
-} \\ [1ex]
- & 
-\md{
-\zeta_{cmd} = \begin{bmatrix}
-\dot{x} & \dot{y} & (a+b)\dot{\theta}
-\end{bmatrix}^{T}
-} \\ [1ex]
- &
-\md{
-\psi = \begin{bmatrix}
-1 & -1 & -1 \\
-1 & 1 & -1 \\
-1 & -1 & 1 \\
-1 & 1 & 1
-\end{bmatrix}
-}
-
-\end{tabular}
-
-\begin{tabular}{l p{4in}}
-
-Where, & \md{\dot{\phi}_{i}} is velocity of wheel i. \\
-	   & \md{\psi} is the kinematic equation. \\
-	   & \md{\dot{x} \: \dot{y} \: \dot{\theta}} are velocity of the center of robot in x direction, y direction and rotation respectively.\\
-	   & \md{a\text{ and }b} is the distance from center of the robot to a wheel in \md{x\text{ and }y} axis respectively. \\
-	   & \md{\zeta_{cmd}} is the command velocity in robot frame. \\
-	   & \md{\zeta_{wheel}} is the wheel velocity vector.
-
-\end{tabular}
-
-\subsection{Localization and Mapping}
-
-Hokuyo laser length finder which acquires environment data is attached to the robot in order to implement localization algorithm. Additionally, the robot odometry information is also considered as one input information to localization algorithm.
-
-Adaptive Monte Carlo Localization system (AMCL) is used for robot localization. AMCL is a probabilistic localization system for a robot moving in 2D. It implements the adaptive (or KLD-sampling) Monte Carlo localization approach (as described by Dieter Fox), which uses a particle filter to track the pose of a robot against a known map.
-
-This known map is acquired with OpenSLAM Gmapping Package which is a highly efficient Rao-Blackwellized particle filter to learn grid maps from laser range data.
-
-ROS navigation stack is used for robot navigation. A 2D navigation stack that takes in information from odometry, sensor streams, and a goal pose commands safe velocity to a mobile base.
+About path planning module, ??
 
 \subsubsection{Odometry Estimation Module}
 
-This module helps to minimize the mean square error of the non-perfect sensor measurement originated from wheel slippage, dynamic surrounded environment and IMU drift over time. Using the laser scanner to estimate the change of position by laser scan matching technique can solve the wheel slip problem while facing with high sensitivity to dynamic environment. On the other hand, estimating the position by double integration of accelerometer causes the quadratic error due to bias noise as seen in IMU model Eq.\ref{eq:2}.
+This module helps to minimize the mean square error of the non-perfect sensor measurement originated from wheel slippage, dynamic surrounded environment and IMU drift over time. Using the laser scanner to estimate the change of position by laser scan matching technique can solve the wheel slip problem while facing with high sensitivity to dynamic environment. Point-to-line distance Iterative Closed Point (ICP)\cite{icp1}\cite{icp2} method is used to be based algorithm for laser scan matching.
 
-\begin{equation}
-\label{eq:2}
-z_{measurement} = z_{true} + bias + w_{gaussian}
-\end{equation}
-
-IMU Bias Noise Correction
-
-Because of bias noise illustrated in Eq.\ref{eq:2} is a very low frequency noise. Therefore, it can be determined offline every time when the robot is stopped more than predefined time. The exponential moving average method is used to smooth bias value.
-
-\begin{equation}
-\label{eq:3}
-bias_{k} = bias_{k-1} + K(z_{k} - bias_{k-1})
-\end{equation}
-Where \md{K} is the forgetting rate constant of the past bias value and \md{z} is the measurement from IMU. The raw information from IMU has to be corrected by bias value in Eq.\ref{eq:3} before the use in next steps.
-
-Kalman's Equation
-
-Robot Operating System (ROS) is selected as the robot operation platform. It has built-in source laser scan matcher algorithm module which uses Point-to-line distance Iterative Closed Point (ICP)\cite{icp1}\cite{icp2} method. These information and wheel encoders are the measurement information for the Kalman filter while acceleration from accelerometer is the control input in order to predict the present state variables at each sampling time because it is independent on ground surface and surrounded environment.The prediction equation for the Kalman filter is constructed as seen in Eq.\ref{eq:4}.
-
-\begin{equation}
-\label{eq:4}
-\begin{bmatrix}
-\hat{v}_{x} \\
-\hat{v}_{y}
-\end{bmatrix}_{k} = 
-\begin{bmatrix}
-1 & 0 \\
-0 & 1 
-\end{bmatrix} \cdot
-\begin{bmatrix}
-\hat{v}_{x} \\
-\hat{v}_{y}
-\end{bmatrix}_{k-1} +
-\begin{bmatrix}
-a_{acc,x}-bias_{acc,x} \\
-a_{acc,y}-bias_{acc,y}
-\end{bmatrix}_{k} \cdot \Delta T
-\end{equation}
+To perform estimation module, Kalman filter which consist of two steps is used. First, the Kalman's observation step calculates different between output from last prediction and actual position which combine laser scan matching and wheels' speed together. Next, the Kalman's prediction step predicts new output by compensate error from previous step and IMU data.
 
 \subsubsection{Collision Avoidance Module}
 
 Object Avoidance
 
-\subsubsection{Real-time Mapping Module}
-
-Not Require
-
 \subsection{Manipulation Module}
+ สำหรับส่วนของการหยิบของ เราได้พัฒนาในส่วนนี้แบ่งแยกออกเป็น2ส่วนหลักๆตามสถาณการ์ณที่ใช้งาน จริงคือ Grasping และ Inverse kinematric ในส่งของ Grasping action เป็นการ คัดแยกวัตถุตามรูปทรงของวัตถุระบบจะส่งการทำงานของแขนไปในรูปแบบ Action ใดๆเพื่อหยิบวัตถุ ส่วนใหญ่จะใช้กับวัตถุที่มีรูปทรง ซีบซ้อนเช่น ถ้วย หรือเพื่อนปฎิบัติการอย่างอื่นต่อเป็น เทน้ำ เทคอร์นเฟลค Inverse kinematric เป็นการหาตำแหน่งศูนย์กลางของวัตถุและสั่งงานมอเตอร์แขนโดยตรง ซึ่งวิธีนี้จะใช้กับวัตถุพื้นฐาน ที่มีรูปทรงไม่ซับซ้อนเป็น กระป๋อง ขวดน้ำ กล่อง
 
-This module is intermediate between Planning module and USB-to-RS485 which exchange data from Planning module and the joint motors. This module constructs to be compatible with motor hardware and it returns standard message with ROS format.
+In manipulation part, our development of grasping action is classified to 2 method, Grasping and Inverse kinematic, for different kind of situation. 
 
+In manipulation part we develop and improve grasping action method For the manipulation system we develop in two main methods by situation there are Grasping and Inverse kinematic, Grasping action method is the method that classify object by shape of object then computer will select gesture action from database and send command to robot arm. In generally this method use with object that have a complex shape or implement with another task. Inverse kinematic is method that find the center point of object and send direct velocity to command robot's arm so this method use with simple object eg. can box bottle.
 \section{Conclusion}
 
 In this year, we mainly focus on developing more stable robot and also it's AI software. We'll improve performance of manipulator as future work. We have experiences from RoboCup@Home competition 2012 and we learn from our mistakes. Our robot and AI are improved in order to join RoboCup2013 event in Netherlands. We hope that our robot team will perform better in RoboCup than the previous year, and we are looking forward to sharing experiences with other guest teams around the world.
@@ -248,11 +163,15 @@ In this year, we mainly focus on developing more stable robot and also it's AI s
 \bibitem{rudu.thesis} Radu Bogdan Rusu, 
 Semantic 3D Object Maps for Everyday Manipulation in Human Living Environments, Germany (2009).
 
+\bibitem{pp_detect} M. Munaro, F. Basso and E. Menegatti. Tracking people within groups with RGB-D data. In Proceedings of the International Conference on Intelligent Robots and Systems (IROS) 2012, Vilamoura (Portugal), 2012.
+
+\bibitem{con_arm} T. Ariyachartphadungkit and K. Sukvichai, Development of an Embedded BLDC motor controller using RS485 standard, 2013.
+
+\bibitem{hector_slam} S. Kohlbrecher and J. Meyer and O. von Stryk and U. Klingauf. A Flexible and Scalable SLAM System with Full 3D Motion Estimation, in Proc. IEEE International Symposium on Safety, Security and Rescue Robotics (SSRR), November, 2011.
+
 \bibitem{icp1} A. Censi, An ICP variant using point-to-line metric, In Proceedings of the 2008 IEEE International Conference on Robotics and Automation (2008).
 
 \bibitem{icp2} A. Censi, An accurate closed-form estimate of ICP's covariance, In Proceedings of the 2007 IEEE International Conference on Robotics and Automation (2007).
-
-\bibitem{pp_de} M. Munaro, F. Basso and E. Menegatti. “Tracking people within groups with RGB-D data”. In Proceedings of the International Conference on Intelligent Robots and Systems (IROS) 2012, Vilamoura (Portugal), 2012.
 
 \end{thebibliography}
 
