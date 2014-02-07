@@ -149,12 +149,8 @@ To perform estimation module, Kalman filter which consist of two steps is used. 
 Object Avoidance
 
 \subsection{Manipulation Module}
- สำหรับส่วนของการหยิบของ เราได้พัฒนาในส่วนนี้แบ่งแยกออกเป็น2ส่วนหลักๆตามสถาณการ์ณที่ใช้งาน จริงคือ Grasping และ Inverse kinematric ในส่งของ Grasping action เป็นการ คัดแยกวัตถุตามรูปทรงของวัตถุระบบจะส่งการทำงานของแขนไปในรูปแบบ Action ใดๆเพื่อหยิบวัตถุ ส่วนใหญ่จะใช้กับวัตถุที่มีรูปทรง ซีบซ้อนเช่น ถ้วย หรือเพื่อนปฎิบัติการอย่างอื่นต่อเป็น เทน้ำ เทคอร์นเฟลค Inverse kinematric เป็นการหาตำแหน่งศูนย์กลางของวัตถุและสั่งงานมอเตอร์แขนโดยตรง ซึ่งวิธีนี้จะใช้กับวัตถุพื้นฐาน ที่มีรูปทรงไม่ซับซ้อนเป็น กระป๋อง ขวดน้ำ กล่อง
 
-In manipulation part, our development of grasping action is classified to 2 method, Grasping and Inverse kinematic, for different kind of situation. 
-
-
-In manipulation part we develop and improve grasping action method For the manipulation system we develop in two main methods by situation there are Grasping and Inverse kinematic, Grasping action method is the method that classify object by shape of object then computer will select gesture action from database and send command to robot arm. In generally this method use with object that have a complex shape or implement with another task. Inverse kinematic is method that find the center point of object and send direct velocity to command robot's arm so this method use with simple object eg. can box bottle.
+For the manipulation system, two distinct methods are developed for serving different situation. First, \textit{grasping action method} is the method that classify object by shape of the object. And it selects gesture movement from predefine actions list and send command to robot arm. In generally, this method use for object which has a complicate shape. Another method is \textit{inverse kinematic method} that receive centroid of object and directly control robot's arm. So, this method use with simple object, e.g., can, box and bottle.
 
 \section{Conclusion}
 
