@@ -10,6 +10,7 @@
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{array}
+\usepackage{graphicx}
 
 \newcommand{\dq}[1]{``#1''}
 \newcommand{\md}[1]{\(#1\)}
@@ -21,7 +22,9 @@
 \author{Kanjanapan Sukvichai
 \and Krit Chaiso
 \and Thanakorn Panyapiang
-\and \\ Suppawit Inhorm
+\and Jaktip Yordsri
+\and Suppawit Inhorm
+\and Tachin 
 \and Sutinai Tanalerkchai
 }
 
@@ -67,13 +70,12 @@ The second layer is the robot body. The robot body can be moved along vertical a
 \end{figure}
 
 \section{Software Architecture}
-Software system of our robot is divided into many modules with specific functionality, for example,
-object recognition module and manipulation module. The communication between modules is implemented 
-by using Robot Operating System(ROS). The modules can be organized into three different layers:\textit{perception layer}, \textit{control layer} and \textit{task layer}.
+Software system of our robot is divided into many modules with specific functionality, for example, object recognition module and planning module. The communication between modules is implemented by using Robot Operating System (ROS). The modules can be organized into three different layers:\textit{perception layer}, \textit{control layer} and \textit{task layer}.
 
-\textit{Perception layer} consist of modules about robot perception. Object recognition, Speech recognition and Localization, for instance. Modules in this layer collect data from sensors, i.e. laser range finder, microphone and Kinect, to perform higher-level algorithms in order to identify state of the environment. Output of this layer is intermediate data for \textit{task layer}
+\textit{Perception layer} consist of modules about environmental understanding. Speech recognition, Object recognition and Localization, for instance. Modules in this layer collect data from sensors, i.e. laser range finder, microphone and Kinect, to perform higher-level algorithms in order to identify state of the environment. Output of this layer is intermediate data for \textit{task layer}
 
 \textit{Task layer} control robot's behaviour to solve complicated task.
+% change to "brainchild layer"
 
 When \textit{Task layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms.
 
@@ -107,7 +109,7 @@ gesture recognition algorithm.
 
 \subsection{Face Recognition}
 
-The Haar like Features Cascade is used to detect faces. Moreover, we modified the input data by using of depth data from Kinect sensor in order to cut the background plane. In face recognition, simple eigenface technique is used.
+Face recognition is basic ability for service robot to learn and classify human. For example, Serving meal and beverage. To complete this task, the robot has to memorize who is owner of the order. To perform face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation. This algorithm consist of 
 
 \subsection{People Detection and Tracking}
 
@@ -119,118 +121,25 @@ After grabbing a person current position, the position will be redirect to Path 
 
 \subsection{Motor Control Module}
 
-Motor control module is based on Spartan 3 FPGA from Xilinx. The FPGA contains a soft 32-bit microprocessor core and peripherals. This embedded processor executes the low level motor control loop, communication and debugging. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. 
+Motor control module is composed of a collection of embedded controllers which executes the low level motor control loop, communication and debugging. First controller is base motor controller. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. And the communication between controller and computer is established by using RS232. Furthermore, there is different controller to control arm motor. To interact with it, RS485 standard is selected and build in to the controller. For convenient usage, second controller also have PID-Torque control, torque limitation and orientation adjustment\cite{con_arm}. 
 
-\begin{figure}
-\centering
-\caption{Top view of Mecanum-wheel robot}
-\label{fig:mecanum-wheel}
-\end{figure}
+\subsection{Localization and Path Planning}
 
-In order to control a robot to move into the environment and avoid the obstacles, the robot model has to be considered. The robot model can be directly derived from the velocity relationship form each wheel to robot center (robot frame). Command velocity is the command input that high level software sends to the embedded system in order to change the robot position. Wheels velocities are converted from the command velocity by using kinetic Eq.\ref{eq:1}. The robot kinetic is derived from robot driving mechanism as shown in Fig.\ref{fig:mecanum-wheel} .
+Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. For satisfy localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map which is predefine or dynamical construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
 
-\begin{equation}
-\label{eq:1}
-\zeta_{wheel} = \psi\cdot\zeta_{cmd}
-\end{equation}
+Predefine and dynamical map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}.
 
-\begin{tabular}{l C{3.5in}}
-
-Where, & 
-\md{
-\zeta_{wheel} = \begin{bmatrix}
-\dot{\phi}_{1} & \dot{\phi}_{2} & \dot{\phi}_{3} & \dot{\phi}_{3}
-\end{bmatrix}^{T}
-} \\ [1ex]
- & 
-\md{
-\zeta_{cmd} = \begin{bmatrix}
-\dot{x} & \dot{y} & (a+b)\dot{\theta}
-\end{bmatrix}^{T}
-} \\ [1ex]
- &
-\md{
-\psi = \begin{bmatrix}
-1 & -1 & -1 \\
-1 & 1 & -1 \\
-1 & -1 & 1 \\
-1 & 1 & 1
-\end{bmatrix}
-}
-
-\end{tabular}
-
-\begin{tabular}{l p{4in}}
-
-Where, & \md{\dot{\phi}_{i}} is velocity of wheel i. \\
-	   & \md{\psi} is the kinematic equation. \\
-	   & \md{\dot{x} \: \dot{y} \: \dot{\theta}} are velocity of the center of robot in x direction, y direction and rotation respectively.\\
-	   & \md{a\text{ and }b} is the distance from center of the robot to a wheel in \md{x\text{ and }y} axis respectively. \\
-	   & \md{\zeta_{cmd}} is the command velocity in robot frame. \\
-	   & \md{\zeta_{wheel}} is the wheel velocity vector.
-
-\end{tabular}
-
-\subsection{Localization and Mapping}
-
-Hokuyo laser length finder which acquires environment data is attached to the robot in order to implement localization algorithm. Additionally, the robot odometry information is also considered as one input information to localization algorithm.
-
-Adaptive Monte Carlo Localization system (AMCL) is used for robot localization. AMCL is a probabilistic localization system for a robot moving in 2D. It implements the adaptive (or KLD-sampling) Monte Carlo localization approach (as described by Dieter Fox), which uses a particle filter to track the pose of a robot against a known map.
-
-This known map is acquired with OpenSLAM Gmapping Package which is a highly efficient Rao-Blackwellized particle filter to learn grid maps from laser range data.
-
-ROS navigation stack is used for robot navigation. A 2D navigation stack that takes in information from odometry, sensor streams, and a goal pose commands safe velocity to a mobile base.
+About path planning module, ??
 
 \subsubsection{Odometry Estimation Module}
 
-This module helps to minimize the mean square error of the non-perfect sensor measurement originated from wheel slippage, dynamic surrounded environment and IMU drift over time. Using the laser scanner to estimate the change of position by laser scan matching technique can solve the wheel slip problem while facing with high sensitivity to dynamic environment. On the other hand, estimating the position by double integration of accelerometer causes the quadratic error due to bias noise as seen in IMU model Eq.\ref{eq:2}.
+This module helps to minimize the mean square error of the non-perfect sensor measurement originated from wheel slippage, dynamic surrounded environment and IMU drift over time. Using the laser scanner to estimate the change of position by laser scan matching technique can solve the wheel slip problem while facing with high sensitivity to dynamic environment. Point-to-line distance Iterative Closed Point (ICP)\cite{icp1}\cite{icp2} method is used to be based algorithm for laser scan matching.
 
-\begin{equation}
-\label{eq:2}
-z_{measurement} = z_{true} + bias + w_{gaussian}
-\end{equation}
-
-IMU Bias Noise Correction
-
-Because of bias noise illustrated in Eq.\ref{eq:2} is a very low frequency noise. Therefore, it can be determined offline every time when the robot is stopped more than predefined time. The exponential moving average method is used to smooth bias value.
-
-\begin{equation}
-\label{eq:3}
-bias_{k} = bias_{k-1} + K(z_{k} - bias_{k-1})
-\end{equation}
-Where \md{K} is the forgetting rate constant of the past bias value and \md{z} is the measurement from IMU. The raw information from IMU has to be corrected by bias value in Eq.\ref{eq:3} before the use in next steps.
-
-Kalman's Equation
-
-Robot Operating System (ROS) is selected as the robot operation platform. It has built-in source laser scan matcher algorithm module which uses Point-to-line distance Iterative Closed Point (ICP)\cite{icp1}\cite{icp2} method. These information and wheel encoders are the measurement information for the Kalman filter while acceleration from accelerometer is the control input in order to predict the present state variables at each sampling time because it is independent on ground surface and surrounded environment.The prediction equation for the Kalman filter is constructed as seen in Eq.\ref{eq:4}.
-
-\begin{equation}
-\label{eq:4}
-\begin{bmatrix}
-\hat{v}_{x} \\
-\hat{v}_{y}
-\end{bmatrix}_{k} = 
-\begin{bmatrix}
-1 & 0 \\
-0 & 1 
-\end{bmatrix} \cdot
-\begin{bmatrix}
-\hat{v}_{x} \\
-\hat{v}_{y}
-\end{bmatrix}_{k-1} +
-\begin{bmatrix}
-a_{acc,x}-bias_{acc,x} \\
-a_{acc,y}-bias_{acc,y}
-\end{bmatrix}_{k} \cdot \Delta T
-\end{equation}
+To perform estimation module, Kalman filter which consist of two steps is used. First, the Kalman's observation step calculates different between output from last prediction and actual position which combine laser scan matching and wheels' speed together. Next, the Kalman's prediction step predicts new output by compensate error from previous step and IMU data.
 
 \subsubsection{Collision Avoidance Module}
 
 Object Avoidance
-
-\subsubsection{Real-time Mapping Module}
-
-Not Require
 
 \subsection{Manipulation Module}
 
@@ -248,11 +157,15 @@ In this year, we mainly focus on developing more stable robot and also it's AI s
 \bibitem{rudu.thesis} Radu Bogdan Rusu, 
 Semantic 3D Object Maps for Everyday Manipulation in Human Living Environments, Germany (2009).
 
+\bibitem{pp_detect} M. Munaro, F. Basso and E. Menegatti. Tracking people within groups with RGB-D data. In Proceedings of the International Conference on Intelligent Robots and Systems (IROS) 2012, Vilamoura (Portugal), 2012.
+
+\bibitem{con_arm} T. Ariyachartphadungkit and K. Sukvichai, Development of an Embedded BLDC motor controller using RS485 standard, 2013.
+
+\bibitem{hector_slam} S. Kohlbrecher and J. Meyer and O. von Stryk and U. Klingauf. A Flexible and Scalable SLAM System with Full 3D Motion Estimation, in Proc. IEEE International Symposium on Safety, Security and Rescue Robotics (SSRR), November, 2011.
+
 \bibitem{icp1} A. Censi, An ICP variant using point-to-line metric, In Proceedings of the 2008 IEEE International Conference on Robotics and Automation (2008).
 
 \bibitem{icp2} A. Censi, An accurate closed-form estimate of ICP's covariance, In Proceedings of the 2007 IEEE International Conference on Robotics and Automation (2007).
-
-\bibitem{pp_de} M. Munaro, F. Basso and E. Menegatti. “Tracking people within groups with RGB-D data”. In Proceedings of the International Conference on Intelligent Robots and Systems (IROS) 2012, Vilamoura (Portugal), 2012.
 
 \end{thebibliography}
 
