@@ -76,7 +76,7 @@ Software system of our robot is divided into many modules with specific function
 
 \textit{Perception layer} consist of modules about environmental understanding. Speech recognition, Object recognition and Localization, for instance. Modules in this layer collect data from sensors, i.e. laser range finder, microphone and Kinect, to perform higher-level algorithms in order to identify state of the environment. Output of this layer is intermediate data for \textit{decision layer}
 
-\textit{Decision layer} control robot's behaviour to solve complicated task.
+\textit{Decision layer} control robot's behavior to solve complicated task. In this layer, decision is made base on user command and information from perception layer. User command is classified into three categories: \textit{question}, \textit{command} and \textit{informative}. \textit{Question} is a sentence which user expect to get a proper answer from robot. \textit{Command} is used when user want robot to perform any action, for example, \dq{\textit{Bring me a pringle}} and \dq{\textit{Follow me}}. When robot get an information, such as \dq{\textit{My name is Brian}} and \dq{\textit{This is kitchen}}, these sentences will be classified as the \textit{Informative command}.
 
 When \textit{decision layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms.
 
