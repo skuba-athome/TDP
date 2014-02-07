@@ -6,3 +6,4 @@ syntax: glob
 *.dvi
 *.toc
 *~
+^TDP-draft/Latex/*.pdf
