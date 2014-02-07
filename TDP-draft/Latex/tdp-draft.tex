@@ -93,7 +93,9 @@ The e-speak is selected as the robot speech synthesis software which uses a \dq{
 
 \subsection{Object Recognition}
 
-We develop this perception using both RGB image and depth image together. For localization approach, we use depth image using Point Cloud Library (PCL) for extracting the object from the background screen using Euclidean Clustering Extraction (ECE). After getting the position of the object, we remap the object position from 3D space to the pixel of RGB image for processing the recognition in the RGB domain. In image domain, descriptor of the object image are extracted using Speeded Up Robust Features (SURF), and will be classified using the predefined model creating with k-Nearest Neighbor Naive Bayes.
+We develop this perception using both RGB image and depth image together. For localization approach, we use depth image using Point Cloud Library (PCL) for extracting the object from the background screen using Euclidean Clustering Extraction (ECE). Additionally, we use some criteria thersold, the table plane, to distinguish the cloud that is definitely not the interested object such as the objects that are beneath the table. After getting the position of clouds of object, we transform the object position using the focal length equation from 3D space to the pixel of RGB image for processing the recognition in the RGB domain. In image domain, descriptors of the object image are extracted using Speeded Up Robust Features (SURF), and will be classified using the predefined model created with k-Nearest Neighbor Naive Bayes.
+
+The performance of this approach gains us the higher efficiency of both localization and recognition. First of all, localization using depth image has the acceptable accuracy for scoping the object area from the background in RGB image domain. Lastly, recognition using the  k-Nearest Neighbor Naive Bayes has a significance of accuracy in classification comparing to our old approach. 
 
 \begin{figure}
 \centering
