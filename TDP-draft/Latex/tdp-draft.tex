@@ -92,10 +92,13 @@ Speech recognition is implemented by using \textit{pocketsphinx} base on \textit
 The e-speak is selected as the robot speech synthesis software which uses a \dq{formant synthesis} method. This allows many languages to be provided in a small size. The speech is clear, and can be used at high speeds, but it is not as natural or smooth as larger synthesizers which are based on human speech recordings.
 
 \subsection{Object Recognition}
+    In field of recognition, the most essential are localization and recognition, because they are deeply associated to each other. Recognition requires localization; and reversely, localization requires recognition.
+    
+Improving the precision of recognition module, we enhance localization approach by using both RGB image and depth image together. For localization process, we apply depth information from OpenNI Library for extracting objects from the background scene using Euclidean Clustering Extraction (ECE). Additionally, we use some explicit constrains, e.g., table plane boundary and manipulator work space limitation, to distinguish the cloud that is definitely not the interested object such as, the objects that are beneath the table. After computing the centroid of extracted point cloud, we transform the object's border using the focal length equation from 3D space to RGB domain. From object's border, the segmented image is obtained. In image domain, descriptors of the segmented image are extracted using Speeded Up Robust Features (SURF), and can be classified by recognition process.
 
-We develop this perception using both RGB image and depth image together. For localization approach, we use depth image using Point Cloud Library (PCL) for extracting the object from the background screen using Euclidean Clustering Extraction (ECE). Additionally, we use some criteria thersold, the table plane, to distinguish the cloud that is definitely not the interested object such as the objects that are beneath the table. After getting the position of clouds of object, we transform the object position using the focal length equation from 3D space to the pixel of RGB image for processing the recognition in the RGB domain. In image domain, descriptors of the object image are extracted using Speeded Up Robust Features (SURF), and will be classified using the predefined model created with k-Nearest Neighbor Naive Bayes.
+About recognition process, initially, we cluster the extracted descriptors using K-means clustering. Next, the histogram is created by counting the number of descriptors in each cluster. Finally, the histogram used as the parameter is passed into SVM model which is supervised learning for classification the object category.
 
-The performance of this approach gains us the higher efficiency of both localization and recognition. First of all, localization using depth image has the acceptable accuracy for scoping the object area from the background in RGB image domain. Lastly, recognition using the  k-Nearest Neighbor Naive Bayes has a significance of accuracy in classification comparing to our old approach. 
+The performance of this approach gains us the higher efficiency of both localization and recognition. First of all, localization using depth information has the acceptable accuracy for scoping the object boundary from the background scene. Lastly, recognition process has a significance of accuracy in classification comparing to our old method. Finally, result of this module is shown in Fig.\ref{fig:object_recog}.
 
 \begin{figure}
 \centering
@@ -115,9 +118,7 @@ Face recognition is basic ability for service robot to learn and classify human.
 
 \subsection{People Detection and Tracking}
 
-People tracking can be done by using a laser scanner as a robot sensor. By using the Maximum likelihood approach algorithm associate data in the validation region and using Kalman filter, that has a constant velocity model system, as a filter. We can determine the position of the person.
-
-After grabbing a person current position, the position will be redirect to Path planner module to locate the path from robot to the person. Meanwhile to solve the problem of robot moving to close to the obstacles, we have to modify the path with elastic band approach to make the path as center as possible.
+For following person, robot need two important ability which is detection and tracking the interested person. Our development in people detection use the RGB-D, point cloud, data as the input for performing the clustering of people. Avoiding the problem of detection such as merging cloud of more than one person or occlusion, sub-clustering of people's head is considered to use as the representation of each person. Another component of this process, tracking is implemented based on the Likelihoods computation, Joint likelihood data association, and HOG-based initializer.
 
 \section{Motion Control and Planning}
 
@@ -144,9 +145,12 @@ To perform estimation module, Kalman filter which consist of two steps is used. 
 Object Avoidance
 
 \subsection{Manipulation Module}
+ สำหรับส่วนของการหยิบของ เราได้พัฒนาในส่วนนี้แบ่งแยกออกเป็น2ส่วนหลักๆตามสถาณการ์ณที่ใช้งาน จริงคือ Grasping และ Inverse kinematric ในส่งของ Grasping action เป็นการ คัดแยกวัตถุตามรูปทรงของวัตถุระบบจะส่งการทำงานของแขนไปในรูปแบบ Action ใดๆเพื่อหยิบวัตถุ ส่วนใหญ่จะใช้กับวัตถุที่มีรูปทรง ซีบซ้อนเช่น ถ้วย หรือเพื่อนปฎิบัติการอย่างอื่นต่อเป็น เทน้ำ เทคอร์นเฟลค Inverse kinematric เป็นการหาตำแหน่งศูนย์กลางของวัตถุและสั่งงานมอเตอร์แขนโดยตรง ซึ่งวิธีนี้จะใช้กับวัตถุพื้นฐาน ที่มีรูปทรงไม่ซับซ้อนเป็น กระป๋อง ขวดน้ำ กล่อง
 
-This module is intermediate between Planning module and USB-to-RS485 which exchange data from Planning module and the joint motors. This module constructs to be compatible with motor hardware and it returns standard message with ROS format.
+In manipulation part, our development of grasping action is classified to 2 method, Grasping and Inverse kinematic, for different kind of situation. 
 
+
+In manipulation part we develop and improve grasping action method For the manipulation system we develop in two main methods by situation there are Grasping and Inverse kinematic, Grasping action method is the method that classify object by shape of object then computer will select gesture action from database and send command to robot arm. In generally this method use with object that have a complex shape or implement with another task. Inverse kinematic is method that find the center point of object and send direct velocity to command robot's arm so this method use with simple object eg. can box bottle.
 \section{Conclusion}
 
 In this year, we mainly focus on developing more stable robot and also it's AI software. We'll improve performance of manipulator as future work. We have experiences from RoboCup@Home competition 2012 and we learn from our mistakes. Our robot and AI are improved in order to join RoboCup2013 event in Netherlands. We hope that our robot team will perform better in RoboCup than the previous year, and we are looking forward to sharing experiences with other guest teams around the world.
