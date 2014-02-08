@@ -48,27 +48,16 @@ SKUBA @home was established in 2011. In 2012, SKUBA @home made the first partici
 
 In field of recognition, the most essential are localization and recognition, because they are deeply associated to each other. Recognition requires localization; and reversely, localization requires recognition.
 
-The next section will explain about our robot that is designed for further research in the future. In the 3rd section is about software architecture and also includes object recognition algorithm. Section 4 will explained is about low level design and model of the robot including robot motion and robot odometry estimation. Finally in the last section, we will present the conclusion.
+The next section will explain about our robot mechanical and electrical design. In section 3 is about software architecture and also includes new object recognition algorithm and new voice system. Section 4 will explained is about controlling robot movement, such as, motor control component and new manipulator handle component. Finally in the last section, we will present the conclusion.
 
 \section{Robot Hardware}
 
-The new SKUBA@Home platform is designed as a three layer platform. The first layer is the driving mechanism layer. Second layer is a robot body which can be moved in vertical and the last layer is robot head and arm. Robot driving mechanism base consists of four 8'' mecanum wheels. Each mecanum wheel is driven by Maxon EC 45 flat (brushless motor, 70 watt) BLDC motor combined with planetary gearhead of 1:36 gear ratio. The Hokuyo laser length finder is attached to the lower layer in
-order to obtain the environment information which will be used
-in SLAM algorithm. This mecanum
-wheel has more mobility than the regular fixed wheel since it provides side movement. Now the robot can easily avoid the obstacles and has more flexibility to maneuver to the messy environment. The robot mecanum base is shown in Fig.\ref{fig:base} below.
+The SKUBA@Home platform is designed as a three layer platform. The first layer is the driving mechanism layer. This robot mechanism base consists of four 8'' mecanum wheels. Each mecanum wheel is driven by Maxon EC 45 flat (brushless motor, 70 watt) BLDC motor combined with planetary gearhead of 1:36 gear ratio. Because robot has to securely navigate, FPGA embedded is selected to control 4 motor simultaneously. The Hokuyo laser length finder is attached to the lower layer in order to obtain the environment information which will be used in localization and mapping algorithm. About this mecanum wheel has more mobility than the regular fixed wheel since it provides side movement. Therefore, the robot can easily avoid the obstacles and has more flexibility to maneuver to the messy environment. The second layer is the robot body. The robot body can be moved along vertical axis by using sliding bars which are driven by 70 watt DC windshield wiper motor. The robot head and arm are attached to this robot body. The final layer is the robot head and arm. Robot head has two degrees of freedom neck which is duplicated from the human neck behavior. Kinect sensor, shotgun microphone and Logitech webcam is fixed to the top of the neck which can be used as the human-like head. High torque Dynamixel MX-106R servo, Dynamixel RX-64 servo, Dynamixel RX-28 servo and BLDC Maxon motor are used to construct the robot arm. For conducting BLDC motor, customized embedded is developed by using Arduino chip\cite{con_arm}. Robot arm has 6 degrees of freedom which can perform more complex tasks. Due to object slip from last gripper, we proposed new gripper which more powerful and more sticky. To increase robot appearance, blue light LED array is placed beneath the robot.
 
 \begin{figure}
 \centering
-\caption{The SKUBA@Home robot base}
+\caption{The SKUBA@Home robot(left) and new gripper(right)}
 \label{fig:base}
-\end{figure}
-
-The second layer is the robot body. The robot body can be moved along vertical axis by using sliding bars which are driven by 70 watt DC windshield wiper motor. The robot head and arm are attached to this robot body. The Hokuyo laser length finder is also attached to the center of robot body in order to use in human tracking algorithm. The final layer is the robot head and arm. Robot head has two degrees of freedom neck which is duplicated from the human neck behavior. Kinect sensor is fixed to the top of the neck which can be used as the human eyes. High torque Dynamixel MX-106R smart servo, Dynamixel RX-28 smart servo and BLDC Maxon motor are used to construct the robot arm. Robot arm has 6 degrees of freedom which can perform more complex tasks. The robot arm is shown in Fig.\ref{fig:arm} .
-
-\begin{figure}
-\centering
-\caption{Robot arm}
-\label{fig:arm}
 \end{figure}
 
 \section{Software Architecture}
@@ -122,7 +111,7 @@ To pursue human, robot need two important functions which is human detection and
 
 \subsection{Motor Control System}
 
-Motor control system is composed of a collection of embedded controllers which executes the low level motor control loop, communication and debugging. First controller is base motor controller. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. And the communication between controller and computer is established by using RS232. Furthermore, there is different controller to control arm motor. To interact with it, RS485 standard is selected and build in to the controller. For convenient usage, second controller also have PID-Torque control, torque limitation and orientation adjustment\cite{con_arm}. 
+Motor control system is composed of a collection of embedded controllers which executes the low level motor control loop, communication and debugging. First controller is base motor controller. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. And the communication between controller and computer is established by using RS232. Furthermore, there is different controller to control arm motor. To interact with it, RS485 standard is selected and build in to the controller. For convenient usage, second controller also have PID-Torque control, torque limitation and orientation adjustment. 
 
 \subsection{Localization and Path Planning}
 
@@ -152,6 +141,8 @@ In this year, perception and manipulation are our main focuses. Especially, obje
 
 \begin{thebibliography}{4}
 
+\bibitem{con_arm} T. Ariyachartphadungkit and K. Sukvichai, Development of an Embedded BLDC motor controller using RS485 standard, 2013.
+
 \bibitem{ece} S. Tuerker. Euclidean Cluster Extraction.\\
 \url{http://pointclouds.org/documentation/tutorials/cluster_extraction.php}.
 
@@ -163,8 +154,6 @@ Semantic 3D Object Maps for Everyday Manipulation in Human Living Environments, 
 \bibitem{face_reg} L. Wiskott, J.M. Fellous, N. Kruger and C. Malsburg, Face Recognition by Elastic Bunch Graph Matching, IEEE Trans. PAMI, vol. 19, no. 7, pp. 775-780, 1997. 
 
 \bibitem{pp_detect} M. Munaro, F. Basso and E. Menegatti. Tracking people within groups with RGB-D data. In Proceedings of the International Conference on Intelligent Robots and Systems (IROS) 2012, Vilamoura (Portugal), 2012.
-
-\bibitem{con_arm} T. Ariyachartphadungkit and K. Sukvichai, Development of an Embedded BLDC motor controller using RS485 standard, 2013.
 
 \bibitem{hector_slam} S. Kohlbrecher and J. Meyer and O. von Stryk and U. Klingauf. A Flexible and Scalable SLAM System with Full 3D Motion Estimation, in Proc. IEEE International Symposium on Safety, Security and Rescue Robotics (SSRR), November, 2011.
 
