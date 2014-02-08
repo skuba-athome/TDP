@@ -108,7 +108,7 @@ The performance of this approach gains us the higher efficiency of both localiza
 
 \subsection{Gesture Recognition}
 
-NITE library is included in OpenNI framework. It can retrieve motion gesture, e.g.., wave, circle, swipe, push and steady. And outputs from this library are hand position of all gesture detects. Moreover, it can be detect more than one gesture at a time. Therefore, we select NITE library as our gesture recognition module.
+NITE library is included in OpenNI framework. It can retrieve motion gesture, e.g.., wave, circle, swipe, push and steady. Outputs from this library are hand position of all gesture detects. Moreover, it can be detect more than one gestures at a time. Therefore, we use NITE library in our gesture recognition module.
 
 \subsection{Face Recognition}
 
@@ -116,7 +116,7 @@ Face recognition is basic ability for service robot to learn and classify human.
 
 \subsection{People Detection and Tracking}
 
-To pursue human, robot need two important abilities which is detection human and tracking designated person. People detection method use the RGB-D, point cloud, data as the input to perform the clustering of people. Avoiding the problem of detection, such as, consolidation of many people and occlusion of body part, sub-clustering of people's head is considered to use as the representation of each person. Another component is tracking method which is implemented based on likelihood data association, online classification using color appearance, and HOG-based motion tracking\cite{pp_detect}.
+To pursue human, robot need two important functions which is human detection and designated person tracking. People detection method use the RGB-D, point cloud, data as the input to acquire people position. Avoiding the problem of detection, such as, consolidation of small crowd and obstruction of body part, sub-clustering of people's head is applied as the representation of each detected person. For each detected person, people location from people detection method is passed to tracking method. This method is implemented based on likelihood data association, online classification using color appearance, and HOG-based motion tracking\cite{pp_detect}. After performing tracking method, sequences of all people position is obtained. Results of our people detection and tracking module is shown in Fig.\ref{fig:people_detection}.
 
 \begin{figure}
 \centering
@@ -132,17 +132,17 @@ Motor control system is composed of a collection of embedded controllers which e
 
 \subsection{Localization and Path Planning}
 
-Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. To satisfy localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map which is predefine or dynamical construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
+Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. To serve localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map which is statically or dynamically construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
 
-Predefine and dynamical map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}.
+The static and dynamic map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only laser length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}.
 
 About path planning module, ??
 
 \subsubsection{Odometry Estimation Module}
 
-This module helps to minimize the mean square error of the non-perfect sensor measurement originated from wheel slippage, dynamic surrounded environment and IMU drift over time. Using the laser scanner to estimate the change of position by laser scan matching technique can solve the wheel slip problem while facing with high sensitivity to dynamic environment. Point-to-line distance Iterative Closed Point (ICP)\cite{icp1}\cite{icp2} method is used to be based algorithm for laser scan matching.
+This module helps to minimize the mean square error of the non-perfect sensor measurement originated from wheel slippage, dynamic surrounded environment and IMU drift over time. Using the laser scanner to estimate the change of position by laser scan matching technique can solve the wheel slip problem while facing with high sensitivity and dynamic environment. Point-to-line distance Iterative Closed Point (ICP)\cite{icp1}\cite{icp2} method is used to be based algorithm for laser scan matching.
 
-To perform estimation module, Kalman filter which consist of two steps is used. First, the Kalman's observation step calculates different between output from last prediction and actual position which combine laser scan matching and wheels' speed together. Next, the Kalman's prediction step predicts new output by compensate error from previous step and IMU data.
+To perform estimation module, Kalman filter which consist of two steps is used. First, the Kalman's observation step calculates difference between output from last prediction and actual position which combine laser scan matching and wheels' speed together. Next, the Kalman's prediction step predicts new output by compensate error from previous step and IMU data.
 
 \subsubsection{Collision Avoidance Module}
 
@@ -150,11 +150,11 @@ Object Avoidance
 
 \subsection{Manipulation Module}
 
-For the manipulation system, two distinct methods are developed for serving different situation. First, \textit{grasping action method} is the method that classify object by shape of the object. And it selects gesture movement from predefine actions list and send command to robot arm. In generally, this method use for object which has a complicate shape. Another method is \textit{inverse kinematic method} that receive centroid of object and directly control robot's arm. So, this method use with simple object, e.g., can, box and bottle.
+For the manipulation system, two distinct methods are developed for serving various situation. First, \textit{grasping action method} is the method that classify by shape of particular object. And it selects appropriate movement from predefine sequences of action and send command to robot arm. In generally, this method use for object which has a complicated shape. Another method is \textit{inverse kinematic method} that receive the centroid of an object and directly control robot's manipulator. So, this method use with a simple object, e.g., can, box and bottle.
 
 \section{Conclusion}
 
-In this year, we mainly focus on developing more stable robot and also it's AI software. We'll improve performance of manipulator as future work. We have experiences from RoboCup@Home competition 2012 and we learn from our mistakes. Our robot and AI are improved in order to join RoboCup2013 event in Netherlands. We hope that our robot team will perform better in RoboCup than the previous year, and we are looking forward to sharing experiences with other guest teams around the world.
+In this year, perception and manipulation are our main focuses. Especially, object recognition and voice system are developing to be more stable, precise and robust. We'll improve performance of dynamic localization and mapping as future work. We gained experiences from RoboCup@Home competition 2013 and discovered development idea. For Robocup@Home 2014 in Brazil, our robot are more autonomous and ready for engage in competition. We hope that our robot team will perform better in RoboCup than the previous year, and we are looking forward to sharing experiences with other guest teams around the world.
 
 \begin{thebibliography}{4}
 
