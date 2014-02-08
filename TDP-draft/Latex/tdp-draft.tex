@@ -146,7 +146,7 @@ To perform estimation module, Kalman filter which consist of two steps is used. 
 
 \subsubsection{Collision Avoidance Module}
 
-Object Avoidance
+This component ease the planning module to organize safety movement. By retrieve point cloud data from Kinect, this module projects each point to occupancy map. In order to avoid obstacles, path planner retrieve projection data and manage to construct smooth path. Due to unusual data, such as, ground plane and wall partition, planar elimination algorithm is applied. Result data from algorithm, for instance, table and chair, is projected and pass to planning module continuously.
 
 \subsection{Manipulation Module}
 
