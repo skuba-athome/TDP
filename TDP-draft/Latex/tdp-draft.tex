@@ -78,7 +78,7 @@ Software system of our robot is divided into many modules with specific function
 
 \textit{Decision layer} control robot's behavior to solve complicated task. In this layer, decision is made base on user command and information from perception layer. User command is classified into three categories: \textit{question}, \textit{command} and \textit{informative}. \textit{Question} is a sentence which user expect to get a proper answer from robot. \textit{Command} is used when user want robot to perform any action, for example, \dq{\textit{Bring me a pringle}} and \dq{\textit{Follow me}}. When robot get an information, such as \dq{\textit{My name is Brian}} and \dq{\textit{This is kitchen}}, these sentences will be classified as the \textit{Informative command}.
 
-When \textit{decision layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms.
+When \textit{decision layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms. Furthermore, the layer also controls robot manipulator with precision.
 
 \begin{figure}
 \centering
@@ -136,7 +136,7 @@ Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation}
 
 The static and dynamic map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only laser length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}.
 
-To perform path planning, there is \textit{move\_base} node in \textit{navigation} stack that is consist of two types of planning method. Begin with global planner, this method provide a effective path for robot to navigate through the known map. By using Dijkstra's algorithm, the result path is the shortest and acceptable. Then local planner method move to destination following designated path and avoid obstacles along the movement. To move robot, local planner determine velocity and orientation and directly send command to the robot.
+To achieve path planning, there is \textit{move\_base} node in \textit{navigation} stack that is consist of two types of planning method. Begin with global planner, this method provides an effective path for robot to navigate through the known map. By using Dijkstra's algorithm, the result path is the shortest and acceptable. Then local planner method move to destination following designated path and avoid obstacles along the way. In order to move robot, local planner determine its velocity and orientation. This node directly send command to the robot.
 
 \subsubsection{Odometry Estimation Module}
 
