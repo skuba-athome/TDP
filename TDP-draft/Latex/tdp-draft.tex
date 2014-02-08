@@ -24,7 +24,7 @@
 \and Thanakorn Panyapiang
 \and Jaktip Yodsri
 \and Suppawit Inhorm
-\and Tachin 
+\and Tachin Srisombat
 \and Sutinai Tanalerkchai
 }
 
@@ -136,7 +136,7 @@ Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation}
 
 The static and dynamic map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only laser length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}.
 
-About path planning module, ??
+To perform path planning, there is \textit{move\_base} node in \textit{navigation} stack that is consist of two types of planning method. Begin with global planner, this method provide a effective path for robot to navigate through the known map. By using Dijkstra's algorithm, the result path is the shortest and acceptable. Then local planner method move to destination following designated path and avoid obstacles along the movement. To move robot, local planner determine velocity and orientation and directly send command to the robot.
 
 \subsubsection{Odometry Estimation Module}
 
