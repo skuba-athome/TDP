@@ -80,12 +80,6 @@ Software system of our robot is divided into many modules with specific function
 
 When \textit{decision layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms. Furthermore, the layer also controls robot manipulator with precision.
 
-\begin{figure}
-\centering
-\caption{High level software architecture}
-\label{fig:soft_arc}
-\end{figure}
-
 \subsection{Voice System}
 
 Speech recognition is implemented by using \textit{pocketsphinx} base on \textit{CMUSphinx}, HMM-based speech recognition toolkit. The incoming audio will be split into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. Grammar and dictionary, which generated specifically for each task, can create from list of rules that identify word or sentence that the speech recognition engine should attempt to identify in the spoken input. The tools used to make grammar and dictionary is the \textit{Sphinxbase}, support library for \textit{Pocketsphinx}, which require JSGF file as an input. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at \textit{Carnegie Mellon University}, which is a free and small text-to-speech engine.
@@ -100,6 +94,7 @@ The performance of this approach gains us the higher efficiency of both localiza
 
 \begin{figure}
 \centering
+\includegraphics[height=6.2cm]{object_recognition_figure}
 \caption{Result from object recognition module}
 \label{fig:object_recog}
 \end{figure}
@@ -110,7 +105,7 @@ NITE library is included in OpenNI framework. It can retrieve motion gesture, e.
 
 \subsection{Face Recognition}
 
-Face recognition is basic ability for service robot to learn and classify human. For example, Serving meal and beverage. To complete this task, the robot has to memorize who is owner of the order. To perform face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation. This algorithm consist of 
+Face recognition is basic ability for service robot to learn and classify human, such as, Serving meal and beverage. For this purpose, the robot has to memorize who is owner of the order. Approach to face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation\cite{face_reg}. First part of the algorithm is extracting face bunch graph by using predetermine facial landmarks. When receive the graph, each node is labelled by Gabor wavelet transform. In order to complete recognition task, it compares face graphs by using elastic matching. Finally, result of matching is clarified to be result of recognition module.
 
 \subsection{People Detection and Tracking}
 
@@ -118,6 +113,7 @@ To pursue human, robot need two important functions which is human detection and
 
 \begin{figure}
 \centering
+\includegraphics[height=5.2cm]{people_detection_figure}
 \caption{Result from people detection and tracking}
 \label{fig:people_detection}
 \end{figure}
@@ -163,6 +159,8 @@ In this year, perception and manipulation are our main focuses. Especially, obje
 Semantic 3D Object Maps for Everyday Manipulation in Human Living Environments, Germany, 2009.
 
 \bibitem{obj_rec} D. Schmitt and N. McCoy. Object Classification and Localization Using SURF Descriptors. 2011.
+
+\bibitem{face_reg} L. Wiskott, J.M. Fellous, N. Kruger and C. Malsburg, Face Recognition by Elastic Bunch Graph Matching, IEEE Trans. PAMI, vol. 19, no. 7, pp. 775-780, 1997. 
 
 \bibitem{pp_detect} M. Munaro, F. Basso and E. Menegatti. Tracking people within groups with RGB-D data. In Proceedings of the International Conference on Intelligent Robots and Systems (IROS) 2012, Vilamoura (Portugal), 2012.
 
