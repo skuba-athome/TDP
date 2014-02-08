@@ -112,7 +112,7 @@ NITE library is included in OpenNI framework. It can retrieve motion gesture, e.
 
 \subsection{Face Recognition}
 
-Face recognition is basic ability for service robot to learn and classify human. For example, Serving meal and beverage. To complete this task, the robot has to memorize who is owner of the order. To perform face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation. This algorithm consist of 
+Face recognition is basic ability for service robot to learn and classify human, such as, Serving meal and beverage. For this purpose, the robot has to memorize who is owner of the order. Approach to face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation\cite{face_reg}. First part of the algorithm is extracting face bunch graph by using predetermine facial landmarks. When receive the graph, each node is labelled by Gabor wavelet transform. In order to complete recognition task, it compares face graphs by using elastic matching. Finally, result of matching is clarified to be result of recognition module.
 
 \subsection{People Detection and Tracking}
 
@@ -165,6 +165,8 @@ In this year, perception and manipulation are our main focuses. Especially, obje
 Semantic 3D Object Maps for Everyday Manipulation in Human Living Environments, Germany, 2009.
 
 \bibitem{obj_rec} D. Schmitt and N. McCoy. Object Classification and Localization Using SURF Descriptors. 2011.
+
+\bibitem{face_reg} L. Wiskott, J.M. Fellous, N. Kruger and C. Malsburg, Face Recognition by Elastic Bunch Graph Matching, IEEE Trans. PAMI, vol. 19, no. 7, pp. 775-780, 1997. 
 
 \bibitem{pp_detect} M. Munaro, F. Basso and E. Menegatti. Tracking people within groups with RGB-D data. In Proceedings of the International Conference on Intelligent Robots and Systems (IROS) 2012, Vilamoura (Portugal), 2012.
 
