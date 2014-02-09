@@ -44,7 +44,8 @@ The overview describes both the robot hardware and the overall software architec
 \end{abstract}
 
 \section{Introduction}
-SKUBA @home was established in 2011. In 2012, SKUBA @home made the first participation in Robocup Japan Open 2012 and made the way through finalist. Furthermore, SKUBA @home joined the World Robocup 2012 in Mexico and reach 2nd stage as we anticipated. Last year in Robocup Japan Open 2013, Tokyo, we proved that mecanum platform was suitable for dynamic environment. Lastly, we done a great job in \dp{Follow Me} task which held in Robocup @home 2013, Eindhoven.
+
+SKUBA @home was established in 2011. In 2012, SKUBA @home made the first participation in Robocup Japan Open 2012 and made the way through finalist. Furthermore, SKUBA @home joined the World Robocup 2012 in Mexico and reach 2nd stage as we anticipated. Last year, we built the new robot by using mechanum wheel and proved that it was suitable for dynamic environment in Robocup Japan Open 2013, Tokyo. Lastly, we done well in \dq{Follow Me} task which held in Robocup @home 2013, Eindhoven.
 
 From last year issued, we decide to improve our robot performance by using mecanum robot platform in order to solve the \dq{Walking in Elevator} issue. Thus, this year we hope to complete the \dq{Follow Me} task. Furthermore, Team has developed a new object recognition technique.
 
@@ -74,7 +75,7 @@ When \textit{decision layer} send command to robot, \textit{Control layer} will 
 
 \subsection{Voice System}
 
-Speech recognition is implemented by using \textit{pocketsphinx} base on \textit{CMUSphinx}, HMM-based speech recognition toolkit. The incoming audio will be split into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. Grammar and dictionary, which generated specifically for each task, can create from list of rules that identify word or sentence that the speech recognition engine should attempt to identify in the spoken input. The tools used to make grammar and dictionary is the \textit{Sphinxbase}, support library for \textit{Pocketsphinx}, which require JSGF file as an input. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at \textit{Carnegie Mellon University}, which is a free and small text-to-speech engine. For improve recognition accuracy, the system use feedback from users in situation that the robot require user to confirm their command, confirm their name, for instance. The recognition module use those user's feedback to modify and improve language model.
+Speech recognition is implemented by using \textit{pocketsphinx} base on \textit{CMUSphinx}, HMM-based speech recognition toolkit. Recognition process begin with spliting incoming audio into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. Grammar and dictionary, which generated specifically for each situation, can create from list of rules that the speech recognition engine should attempt to identify in the spoken input. The tools used to make grammar and dictionary is the \textit{Sphinxbase}, support library for \textit{Pocketsphinx}, which require JSGF file as an input. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at \textit{Carnegie Mellon University}, which is a free and small text-to-speech engine. For improve recognition accuracy, the system use feedback from users in situation that the robot require user to confirm their command, confirm their name, for instance. The recognition module use those user's feedback to modify and improve language model.
 
 \subsection{Object Recognition}
     
