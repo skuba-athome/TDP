@@ -13,12 +13,13 @@
 \usepackage{graphicx}
 
 \newcommand{\dq}[1]{``#1''}
+\newcommand{\dit}[1]{\dq{\textit{#1}}}
 \newcommand{\md}[1]{\(#1\)}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 \begin{document}
 
-\title{SKUBA 2013 Team Description}
+\title{SKUBA 2014 Team Description}
 \author{Kanjanapan Sukvichai
 \and Krit Chaiso
 \and Thanakorn Panyapiang
@@ -45,11 +46,9 @@ The overview describes both the robot hardware and the overall software architec
 
 \section{Introduction}
 
-SKUBA @home was established in 2011. In 2012, SKUBA @home made the first participation in Robocup Japan Open 2012 and made the way through finalist. Furthermore, SKUBA @home joined the World Robocup 2012 in Mexico and reach 2nd stage as we anticipated. Last year, we built the new robot by using mechanum wheel and proved that it was suitable for dynamic environment in Robocup Japan Open 2013, Tokyo. Lastly, we done well in \dq{Follow Me} task which held in Robocup @home 2013, Eindhoven.
+SKUBA @home was established in 2011. In 2012, SKUBA @home made the first participation in Robocup Japan Open 2012 and made the way through finalist. Furthermore, SKUBA @home joined the World Robocup 2012 in Mexico and reach 2nd stage as we anticipated. Last year, we built the new robot by using mechanum wheel and proved that it was suitable for dynamic environment in Robocup Japan Open 2013, Tokyo. Lastly, we done well in \dq{Follow Me} task under World Robocup @home 2013 at Eindhoven.
 
-From last year issued, we decide to improve our robot performance by using mecanum robot platform in order to solve the \dq{Walking in Elevator} issue. Thus, this year we hope to complete the \dq{Follow Me} task. Furthermore, Team has developed a new object recognition technique.
-
-In field of recognition, the most essential are localization and recognition, because they are deeply associated to each other. Recognition requires localization; and reversely, localization requires recognition.
+During last year competition, we found two important problems that cause us perform lower than expectation. In disorganized environment, first problem is a tenacious robot with incorrect speech recognition. For instance, in \dq{Enduring General Purpose Service Robot} task, the robot repeatedly produce same error with same command. So, we decide to reduce this failure by propose new idea which will be described later. Second problem is unacceptable object recognition. In most tasks, robot have to grab the object to designated location. But our recognition system produces empty result then robot unable to start grabbing the object. For this reason, we abandon old recognition system and reimplement new system. New object recognition consists of machine learning and clustering technique which will be mentioned later.
 
 The next section will explain about our robot mechanical and electrical design. In section 3, software architecture, new object recognition algorithm and voice recognition system are explained. Section 4 explain is about controlling robot movement, such as, motor control component and new manipulator handle component. Finally in the last section, we will present the conclusion.
 
@@ -69,17 +68,17 @@ Software system of our robot is divided into many modules with specific function
 
 \textit{Perception layer} consist of modules about environmental understanding. Speech recognition, Object recognition and Localization, for instance. Modules in this layer collect data from sensors, i.e. laser range finder, microphone and Kinect, to perform higher-level algorithms in order to identify state of the environment. Output of this layer is intermediate data for \textit{decision layer}
 
-\textit{Decision layer} control robot's behavior to solve complicated task. In this layer, decision is made base on user command and information from perception layer. User command is classified into three categories: \textit{question}, \textit{command} and \textit{informative}. \textit{Question} is a sentence which user expect to get a proper answer from robot. \textit{Command} is used when user want robot to perform any action, for example, \dq{\textit{Bring me a pringle}} and \dq{\textit{Follow me}}. When robot get an information, such as \dq{\textit{My name is Brian}} and \dq{\textit{This is kitchen}}, these sentences will be classified as the \textit{Informative command}.
+\textit{Decision layer} control robot's behavior to solve complicated task. In this layer, decision is made base on user command and information from perception layer. User command is classified into three categories: \textit{question}, \textit{command} and \textit{informative}. \textit{Question} is a sentence which user expect to get a proper answer from robot. \textit{Command} is used when user want robot to perform any action, for example, \dq{Bring me a pringle} and \dq{Follow me}. When robot get an information, such as \dq{My name is Brian} and \dq{This is kitchen}, these sentences will be classified as the \textit{Informative command}.
 
 When \textit{decision layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms. Furthermore, the layer also controls robot manipulator with precision.
 
 \subsection{Voice System}
 
-Speech recognition is implemented by using \textit{pocketsphinx} base on \textit{CMUSphinx}, HMM-based speech recognition toolkit. Recognition process begin with spliting incoming audio into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. For specific situation, vocabulary corpus is created by combining between common phrases, such as \dq{\textit{My name is}} and \dq{\textit{Bring me}} , and predefine name, e.g., \textit{Donna} and \textit{Pringle}. The tools used to make grammar and dictionary is the \textit{Sphinxbase} which require a corpus(\textit{Java Speech Grammar Format}) file as an input. To improve recognition accuracy, the system use feedback from users in case of the robot require user to verify their command, confirm their name, for instance. The recognition module use those user's feedback to modify and decrease probability of incorrect output. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at \textit{Carnegie Mellon University}, which is a free text-to-speech engine. 
+Speech recognition is implemented by using \textit{pocketsphinx} base on CMUSphinx, HMM-based speech recognition toolkit. Recognition process begin with spliting incoming audio into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. For specific situation, vocabulary corpus is created by combining between common phrases, such as \dq{My name is} and \dq{Bring me a} , and predefine name, e.g., \textit{Donna} and \textit{Pringle}. The tools used to make grammar and dictionary is the Sphinxbase which require a corpus(Java Speech Grammar Format) file as an input. To improve recognition accuracy, the system use feedback from users in case of the robot require user to verify their command, confirm their name, for instance. The recognition module use those user's feedback to modify and decrease probability of incorrect output. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at Carnegie Mellon University, which is a free text-to-speech engine. 
 
 \subsection{Object Recognition}
     
-To improve the precision of recognition module, localization approach is enhanced by using both RGB image and depth image together. First, depth information from OpenNI Library is applied for extracting objects from the background scene using Euclidean Clustering Extraction (ECE)\cite{ece}\cite{rudu.thesis}. Additionally, there are some explicit constrains, e.g., table plane boundary and manipulator work space limitation, to distinguish the cloud that is definitely not the interested object, such as, the object that are beneath the table. After computing the centroid of extracted point cloud, object's border is transformed using the focal length equation from 3D space to RGB domain. From object's border, the segmented image is obtained. In image domain, descriptors of the segmented image are extracted using Speeded Up Robust Features (SURF), and can be classified by a recognition process.
+To improve the precision of recognition module, localization approach is enhanced by using both RGB image and depth image together. First, depth information from OpenNI library is applied for extracting objects from the background scene using Euclidean Clustering Extraction\cite{ece}\cite{rudu.thesis}. Additionally, there are some explicit constrains, e.g., table plane boundary and manipulator work space limitation, to distinguish the cloud that is definitely not the interested object, such as, the object that are beneath the table. After computing the centroid of extracted point cloud, object's border is transformed using the focal length equation from 3D space to RGB domain. From object's border, the segmented image is obtained. In image domain, descriptors of the segmented image are extracted using Speeded-Up Robust Features(SURF), and can be classified by a recognition process.
 
 Another developed process is a recognition process. Initially, the extracted descriptors are clustered using K-means clustering. Next, the histogram for each object is created by counting the number of descriptors in each cluster. Finally, the set of histograms are used as learning instance for SVM method which is supervised learning for classification the object category\cite{obj_rec}.
 
@@ -121,7 +120,13 @@ Motor control system is composed of a collection of embedded controllers which e
 
 Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. To serve localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map which is statically or dynamically construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
 
-The static and dynamic map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only laser length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}.
+The static and dynamic map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package requires only laser length finder data. To construct an occupancy grid map, it performs laser beam matching using Gauss-Newton approach\cite{hector_slam}. The comparison result between \textit{gmapping} and \textit{hector\_mapping} is shown in Fig.\ref{fig:hector}.
+
+\begin{figure}
+\centering
+\caption{Comparison occupancy map between \textit{gmapping}(left) and \textit{hector\_mapping}(right)}
+\label{fig:hector}
+\end{figure}
 
 To achieve path planning, there is \textit{move\_base} node in \textit{navigation} stack that is consist of two types of planning method. Begin with global planner, this method provides an effective path for robot to navigate through the known map. By using Dijkstra's algorithm, the result path is the shortest and acceptable. Then local planner method move to destination following designated path and avoid obstacles along the way. In order to move robot, local planner determine its velocity and orientation. This node directly send command to the robot.
 
@@ -137,7 +142,7 @@ This component ease the planning module to organize safety movement. By retrieve
 
 \subsection{Manipulation Module}
 
-For the manipulation system, two distinct methods are developed for serving various situation. First, \textit{grasping action method} is the method that classify by shape of particular object. And it selects appropriate movement from predefine sequences of action and send command to robot arm. In generally, this method use for object which has a complicated shape. Another method is \textit{inverse kinematic method} that receive the centroid of an object and directly control robot's manipulator. So, this method use with a simple object, e.g., can, box and bottle.
+For the manipulation system, two distinct methods are developed for serving various situation. First, grasping action method uses a shape of particular object as input. And it selects appropriate movement from predefine sequences of action and send command to robot arm. In generally, this method use for object which has a complicated shape. Another method is inverse kinematic method that receive the centroid of an object and directly control robot's manipulator. So, this method use with a simple object, e.g., can, box and bottle.
 
 \section{Conclusion}
 
