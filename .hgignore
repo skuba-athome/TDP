@@ -1,0 +1,9 @@
+syntax: glob
+
+*.aux
+*.log
+*.gz
+*.dvi
+*.toc
+*~
+TDP-draft/Latex/*.pdf
