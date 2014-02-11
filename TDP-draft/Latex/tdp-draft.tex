@@ -38,12 +38,7 @@
 \maketitle
 
 \begin{abstract}
-This paper describe overview system of Skuba, Robocup @Home robot team from Kasetsart University, in order to particiapte in Robocup @Home 2014. Our development this year focus on robot perception, i.e., speech and object recogtion. We have improved object recognition ability with several techniques and algorithms which will be mentioned later. 
-
-This paper is used to describe the SKUBA @home League robot team from Thailand.
-SKUBA@home is designed under the World Robocup 2012 rules. 
-Based on the last participation, this year we're focusing on the new base platform which designed by using mecanum wheels and concentrating on ways to improve the performance of object recognition.
-The overview describes both the robot hardware and the overall software architecture of our team.
+This paper describe software architecture and hardware design system of SKUBA, Robocup @Home robot team from Kasetsart University, in order to participate in Robocup @Home 2014. Our robot hardware doesn't have major change except the gripper that was redesigned to deal with object slip issue we encounter from previous Robocup. The research this year focus on speech recognition and object recognition which are our main problems from last year competition. This year, We'll evaluate our new techniques by using competition environment.
 \end{abstract}
 
 \section{Introduction}
@@ -56,7 +51,7 @@ The next section will explain about our robot mechanical and electrical design. 
 
 \section{Robot Hardware}
 
-The SKUBA@Home platform is designed as a three layeys. The first layer is the driving mechanism layer. This robot base consists of four 8'' mecanum wheels. Each mecanum wheel is driven by Maxon EC 45 flat (brushless motor, 70 watt) BLDC motor combined with planetary gearhead of 1:36 gear ratio. Because robot has to securely navigate, FPGA embedded is selected to control 4 motors simultaneously. The Hokuyo laser length finder is attached to the lower layer in order to obtain the environment information which will be used in localization and mapping algorithm. About this mecanum wheel is more mobility than the regular fixed wheel since it provides side movement. Therefore, the robot can easily avoid the obstacles and has more flexibility to maneuver to the messy environment. The second layer is the robot body. The robot body can be moved along vertical axis by using sliding bars which are driven by 70 watt DC windshield wiper motor. The robot head and arm are attached to this layer. The final layer is the robot head and arm. Robot head has two degrees of freedom neck which is similar to the human neck behavior. Kinect sensor, shotgun microphone and Logitech webcam is fixed to the top of the neck which can be used as the human-like head. High torque Dynamixel MX-106R servo, Dynamixel RX-64 servo, Dynamixel RX-28 servo and BLDC Maxon motor are used to construct the robot arm. For conducting BLDC motor, customized embedded is developed by using Arduino platform\cite{con_arm}. Robot arm has 6 degrees of freedom which can perform more complex tasks. Due to object slip from last gripper design, we proposed new gripper which more powerful and more sticky.
+The SKUBA@Home platform is designed as a three layers. The first layer is the driving mechanism layer. This robot base consists of four 8'' mecanum wheels. Each mecanum wheel is driven by Maxon EC 45 flat (brushless motor, 70 watt) BLDC motor combined with planetary gear-head of 1:36 gear ratio. Because robot has to securely navigate, FPGA embedded is selected to control 4 motors simultaneously. The Hokuyo laser length finder is attached to the lower layer in order to obtain the environment information which will be used in localization and mapping algorithm. About this mecanum wheel is more mobility than the regular fixed wheel since it provides side movement. Therefore, the robot can easily avoid the obstacles and has more flexibility to manoeuvre to the messy environment. The second layer is the robot body. The robot body can be moved along vertical axis by using sliding bars which are driven by 70 watt DC wind-shield wiper motor. The robot head and arm are attached to this layer. The final layer is the robot head and arm. Robot head has two degrees of freedom neck which is similar to the human neck behavior. Kinect sensor, shotgun microphone and Logitech webcam is fixed to the top of the neck which can be used as the human-like head. High torque Dynamixel MX-106R servo, Dynamixel RX-64 servo, Dynamixel RX-28 servo and BLDC Maxon motor are used to construct the robot arm. For conducting BLDC motor, customized embedded is developed by using Arduino platform\cite{con_arm}. Robot arm has 6 degrees of freedom which can perform more complex tasks. Due to object slip from last gripper design, we proposed new gripper which more powerful and more sticky.
 
 \begin{figure}
 \centering
@@ -76,7 +71,7 @@ When \textit{decision layer} send command to robot, \textit{Control layer} will 
 
 \subsection{Voice System}
 
-Speech recognition is implemented by using \textit{pocketsphinx} base on CMUSphinx, HMM-based speech recognition toolkit. Recognition process begin with spliting incoming audio into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. For specific situation, vocabulary corpus is created by combining between common phrases, such as \dq{My name is} and \dq{Bring me a} , and predefine name, e.g., \textit{Donna} and \textit{Pringle}. The tools used to make grammar and dictionary is the Sphinxbase which require a corpus(Java Speech Grammar Format) file as an input. To improve recognition accuracy, the system use feedback from users in case of the robot require user to verify their command, confirm their name, for instance. The recognition module use those user's feedback to modify and decrease probability of incorrect output. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at Carnegie Mellon University, which is a free text-to-speech engine. 
+Speech recognition is implemented by using \textit{pocketsphinx} base on CMUSphinx, HMM-based speech recognition toolkit. Recognition process begin with splitting incoming audio into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. For specific situation, vocabulary corpus is created by combining between common phrases, such as \dq{My name is} and \dq{Bring me a} , and predefine name, e.g., \textit{Donna} and \textit{Pringle}. The tools used to make grammar and dictionary is the Sphinxbase which require a corpus(Java Speech Grammar Format) file as an input. To improve recognition accuracy, the system use feedback from users in case of the robot require user to verify their command, confirm their name, for instance. The recognition module use those user's feedback to modify and decrease probability of incorrect output. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at Carnegie Mellon University, which is a free text-to-speech engine. 
 
 \subsection{Object Recognition}
     
@@ -149,6 +144,17 @@ For the manipulation system, two distinct methods are developed for serving vari
 \section{Conclusion}
 
 In this year, perception and manipulation are our main focuses. Especially, object recognition and voice system are developed to be more stable, precise and robust. We'll improve performance of dynamic localization and mapping as future work. We gained experiences from RoboCup@Home competition 2013 and discovered development idea. For Robocup@Home 2014 in Brazil, our robot are more autonomous and ready for engage in competition. We hope that our robot team will perform better in RoboCup than the previous year, and we are looking forward to sharing experiences with other great teams around the world.
+
+\section*{Team Member}
+
+This year, SKUBA@home team is consist of this following members:
+\begin{itemize}
+\item Supervisor: Kanjanapan Sukvichai
+\item Team Leader: Thanakorn Panyapiang
+\item Computer Engineering: Krit Chaiso, Jaktip Yodsri, Tachin Srisombat, and Tisana Kitsahawong
+\item Electrical Engineering: Teeratath Ariyachartphadungkit, Suppawit Inhorm
+\item Mechanical Engineering: Sutinai Tanalerkchai
+\end{itemize}
 
 \begin{thebibliography}{4}
 
