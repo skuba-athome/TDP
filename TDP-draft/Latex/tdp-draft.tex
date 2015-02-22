@@ -43,11 +43,11 @@ This paper briefly describe software architecture and hardware design of SKUBA, 
 
 \section{Introduction}
 
-SKUBA@home was established in 2011. In 2012, SKUBA@home made the first participation in Robocup Japan Open 2012 and made the way through finalist. Furthermore, SKUBA@home joined the World Robocup 2012 in Mexico and reach 2nd stage as we anticipated. Last year, we built the new robot by using mechanum wheel and proved that it was suitable for dynamic environment in Robocup Japan Open 2013, Tokyo. Lastly, we done well in \dq{Follow Me} task under World Robocup@home 2013 at Eindhoven.
+SKUBA@home was established in 2011. In 2012, SKUBA@home made the first participation in Robocup Japan Open 2012 and made the way through finalist. Furthermore, SKUBA@home joined the World Robocup 2012 in Mexico and reach 2nd stage as we anticipated. We built the 2nd version robot in order to perform in the Robocup Japan Open 2013, Tokyo, and Robocup@home 2013, Eindhoven. In last year competition at Fukuoka, Robocup Japan Open 2014, we managed to archive the technical challenge reward.
 
-During last year competition, we found two important problems that cause us perform lower than expectation. In disorganized environment, first problem is a tenacious robot with incorrect speech recognition. For instance, in \dq{Enduring General Purpose Service Robot} task, the robot repeatedly produce same error with same command. So, we decide to reduce this failure by propose new idea which will be described later. Second problem is unacceptable object recognition. In most tasks, robot have to grab the object to designated location. But our recognition system produces empty result then robot unable to start grabbing the object. For this reason, we abandon old recognition system and reimplement new system. New object recognition consists of machine learning and clustering technique which will be mentioned later.
+In this year, we mainly emphasized on robot's perception. And, there are three major improvements on our robot's software components. First, face recognition system is reimplemented using deep learning approach, currently popular technique in machine learning. Second, furniture recognition system is purposed to enlarge the diversity of robot's perception. And, the final component is data control system which improves the effectiveness of perception as well as the development process. It handles the data storing and retrieving for other systems using database software.
 
-The next section will explain about our robot mechanical and electrical design. In section 3, software architecture, new object recognition algorithm and voice recognition system are explained. Section 4 explain is about controlling robot movement, such as, motor control component and new manipulator handle component. Finally in the last section, we will present the conclusion.
+The next section will explain about our robot mechanical and electrical design. In section 3, software architecture, face recognition with deep learning approach and methodology of furniture recognition are explained. Section 4 explain is about controlling robot movement, such as, motor control component and new manipulator handle component. Finally in the last section, we will present the conclusion.
 
 \section{Robot Hardware}
 
@@ -69,9 +69,13 @@ Software system of our robot is divided into many modules with specific function
 
 When \textit{decision layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms. Furthermore, the layer also controls robot manipulator with precision.
 
-\subsection{Voice System}
+\subsection{Face Recognition System}
 
-Speech recognition is implemented by using \textit{pocketsphinx} base on CMUSphinx, HMM-based speech recognition toolkit. Recognition process begin with splitting incoming audio into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. For specific situation, vocabulary corpus is created by combining between common phrases, such as \dq{My name is} and \dq{Bring me a} , and predefine name, e.g., \textit{Donna} and \textit{Pringle}. The tools used to make grammar and dictionary is the Sphinxbase which require a corpus(Java Speech Grammar Format) file as an input. To improve recognition accuracy, the system use feedback from users in case of the robot require user to verify their command, confirm their name, for instance. The recognition module use those user's feedback to modify and decrease probability of incorrect output. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at Carnegie Mellon University, which is a free text-to-speech engine. 
+Face recognition is basic ability for service robot to learn and classify human, such as, Serving meal and beverage. For this purpose, the robot has to memorize who is the owner of the order. Approach to face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation\cite{face_reg}. First part of the algorithm is extracting face bunch graph by using predetermine facial landmarks. When receive the graph, each node is labelled by Gabor wavelet transform. In order to complete recognition task, it compares face graphs by using elastic matching. Finally, result of matching is clarified to be result of recognition module.
+
+\subsection{Furniture Recognition System}
+
+\subsection{Data Control System}
 
 \subsection{Object Recognition}
     
@@ -87,14 +91,6 @@ The performance of this approach gains us the higher efficiency of both localiza
 \caption{Result from object recognition module}
 \label{fig:object_recog}
 \end{figure}
-
-\subsection{Gesture Recognition}
-
-NITE library is included in OpenNI framework. It can retrieve motion gesture, e.g.., wave, circle, swipe, push and steady. Outputs from this library are hand position of all gesture detects. Moreover, it can be detect more than one gestures at a time. Therefore, we use NITE library in our gesture recognition module.
-
-\subsection{Face Recognition}
-
-Face recognition is basic ability for service robot to learn and classify human, such as, Serving meal and beverage. For this purpose, the robot has to memorize who is the owner of the order. Approach to face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation\cite{face_reg}. First part of the algorithm is extracting face bunch graph by using predetermine facial landmarks. When receive the graph, each node is labelled by Gabor wavelet transform. In order to complete recognition task, it compares face graphs by using elastic matching. Finally, result of matching is clarified to be result of recognition module.
 
 \subsection{People Detection and Tracking}
 
