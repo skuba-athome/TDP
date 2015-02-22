@@ -19,14 +19,13 @@
 
 \begin{document}
 
-\title{SKUBA 2014 Team Description}
+\title{SKUBA 2015 Team Description}
 \author{Kanjanapan Sukvichai
 \and Krit Chaiso
-\and Thanakorn Panyapiang
 \and Jaktip Yodsri
-\and Suppawit Inhorm
-\and Tachin Srisombat
-\and Sutinai Tanalerkchai
+\and Kandith Wongsuwan
+\and Mukda Teeralertpanich
+\and Konlayut Songkrasin
 }
 
 \institute{ Faculty of Engineering, Kasetsart University\\
@@ -69,10 +68,6 @@ Software system of our robot is divided into many modules with specific function
 
 When \textit{decision layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms. Furthermore, the layer also controls robot manipulator with precision.
 
-\subsection{Voice System}
-
-Speech recognition is implemented by using \textit{pocketsphinx} base on CMUSphinx, HMM-based speech recognition toolkit. Recognition process begin with splitting incoming audio into utterances and converted into sequence of words. The system require grammar and dictionary in order to do speech recognition. For specific situation, vocabulary corpus is created by combining between common phrases, such as \dq{My name is} and \dq{Bring me a} , and predefine name, e.g., \textit{Donna} and \textit{Pringle}. The tools used to make grammar and dictionary is the Sphinxbase which require a corpus(Java Speech Grammar Format) file as an input. To improve recognition accuracy, the system use feedback from users in case of the robot require user to verify their command, confirm their name, for instance. The recognition module use those user's feedback to modify and decrease probability of incorrect output. For speech synthesis, our robot use \textit{Flite}, speech synthesis engine developed at Carnegie Mellon University, which is a free text-to-speech engine. 
-
 \subsection{Object Recognition}
     
 To improve the precision of recognition module, localization approach is enhanced by using both RGB image and depth image together. First, depth information from OpenNI library is applied for extracting objects from the background scene using Euclidean Clustering Extraction\cite{ece}\cite{rudu.thesis}. Additionally, there are some explicit constrains, e.g., table plane boundary and manipulator work space limitation, to distinguish the cloud that is definitely not the interested object, such as, the object that are beneath the table. After computing the centroid of extracted point cloud, object's border is transformed using the focal length equation from 3D space to RGB domain. From object's border, the segmented image is obtained. In image domain, descriptors of the segmented image are extracted using Speeded-Up Robust Features(SURF), and can be classified by a recognition process.
@@ -87,10 +82,6 @@ The performance of this approach gains us the higher efficiency of both localiza
 \caption{Result from object recognition module}
 \label{fig:object_recog}
 \end{figure}
-
-\subsection{Gesture Recognition}
-
-NITE library is included in OpenNI framework. It can retrieve motion gesture, e.g.., wave, circle, swipe, push and steady. Outputs from this library are hand position of all gesture detects. Moreover, it can be detect more than one gestures at a time. Therefore, we use NITE library in our gesture recognition module.
 
 \subsection{Face Recognition}
 
