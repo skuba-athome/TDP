@@ -109,17 +109,6 @@ The performance of this approach gains us the higher efficiency of both localiza
 \label{fig:object_recog}
 \end{figure}
 
-\subsection{People Detection and Tracking}
-
-To pursue human, robot need two important functions which is human detection and designated person tracking. People detection method use the RGB-D, point cloud, data as the input to acquire people position. Avoiding the problem of detection, such as, consolidation of small crowd and obstruction of body part, sub-clustering of people's head is applied as the representation of each detected person. For each detected person, people location from people detection method is passed to tracking method. This method is implemented basrudued on likelihood data association, online classification using color appearance, and HOG-based motion tracking\cite{pp_detect}. After performing tracking method, sequences of all people position is obtained. Results of our people detection and tracking module is shown in Fig.\ref{fig:people_detection}.
-
-\begin{figure}
-\centering
-\includegraphics[height=5.2cm]{people_detection_figure}
-\caption{Result from people detection and tracking}
-\label{fig:people_detection}
-\end{figure}
-
 \section{Motion Control and Planning}
 
 \subsection{Motor Control System}
