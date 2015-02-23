@@ -19,14 +19,13 @@
 
 \begin{document}
 
-\title{SKUBA 2014 Team Description}
+\title{SKUBA 2015 Team Description}
 \author{Kanjanapan Sukvichai
 \and Krit Chaiso
-\and Thanakorn Panyapiang
 \and Jaktip Yodsri
-\and Suppawit Inhorm
-\and Tachin Srisombat
-\and Sutinai Tanalerkchai
+\and Kandith Wongsuwan
+\and Mukda Teeralertpanich
+\and Konlayut Songkrasin
 }
 
 \institute{ Faculty of Engineering, Kasetsart University\\
@@ -45,13 +44,17 @@ This paper briefly describe software architecture and hardware design of SKUBA, 
 
 SKUBA@home was established in 2011. In 2012, SKUBA@home made the first participation in Robocup Japan Open 2012 and made the way through finalist. Furthermore, SKUBA@home joined the World Robocup 2012 in Mexico and reach 2nd stage as we anticipated. We built the 2nd version robot in order to perform in the Robocup Japan Open 2013, Tokyo, and Robocup@home 2013, Eindhoven. In last year competition at Fukuoka, Robocup Japan Open 2014, we managed to archive the technical challenge reward.
 
-In this year, we mainly emphasized on robot's perception. And, there are three major improvements on our robot's software components. First, face recognition system is reimplemented using deep learning approach, currently popular technique in machine learning. Second, furniture recognition system is purposed to enlarge the diversity of robot's perception. And, the final component is data control system which improves the effectiveness of perception as well as the development process. It handles the data storing and retrieving for other systems using database software.
+In this year, we mainly emphasized on robot's perception. And, there are three major improvements on our robot's software components. First, face recognition module is reimplemented using deep learning approach, currently popular technique in machine learning area. Second, furniture recognition is purposed to enlarge the diversity of robot's perception. This component provide information about surrounding furniture, such as, tables and chairs. And, the final component is data control system which improves the effectiveness of perception as well as the development process. It handles the data storing and retrieving for other systems using database software.
 
 The next section will explain about our robot mechanical, electrical design and calibration technique. In section 3, software architecture, face recognition with deep learning approach, methodology of furniture recognition and data control system are explained. Section 4 explains about controlling robot movement, such as, motor control and manipulator component. Finally in the last section, we will present the conclusion.
 
 \section{Robot Hardware}
 
-The SKUBA@Home platform is designed as a three layers. The first layer is the driving mechanism layer. This robot base consists of four 8'' mecanum wheels. Each mecanum wheel is driven by Maxon EC 45 flat (brushless motor, 70 watt) BLDC motor combined with planetary gear-head of 1:36 gear ratio. Because robot has to securely navigate, FPGA embedded is selected to control 4 motors simultaneously. The Hokuyo laser length finder(URG-04LX-UG01) is attached to the lower layer in order to obtain the environment information which will be used in localization and mapping algorithm. About this mecanum wheel is more mobility than the regular fixed wheel since it provides side movement. Therefore, the robot can easily avoid the obstacles and has more flexibility to manoeuvre to the messy environment. The second layer is the robot body. The robot body can be moved along vertical axis by using sliding bars which are driven by 70 watt DC wind-shield wiper motor. The robot head and arm are attached to this layer. The final layer is the robot head and arm. Robot head has two degrees of freedom neck which is similar to the human neck behavior. Kinect sensor, shotgun microphone and Logitech webcam is fixed to the top of the neck which can be used as the human-like head. High torque Dynamixel RX-64 servo, Dynamixel RX-28 servo and BLDC Maxon motor are used to construct the robot arm. For conducting BLDC motor, customized embedded is developed by using Maple platform which is the expanded version of Arduino platform\cite{con_arm}. Robot arm has 6 degrees of freedom which can perform more complex tasks. Due to object slip from last gripper design, we proposed new gripper which more powerful and more sticky.
+This year, the SKUBA@Home has been redesigned to fix the hardware condition. And we keep using three layers platform. The first layer, robot base layer, consists of four 6$''$ mecanum wheels. Because of robot  movement problem and annoying sound, the wheel's diameter is diminished from last year to be more precise in movement, less mechanical slip and less sound production. Each of them is driven by Maxon Brushless DC (BLDC) Motor combined with planetary gear-head of 1:36 gear ratio and FPGA embedded is chosen to control 4 motors synchronously. The Hokuyo laser length finder (URG-04LX-UG01) is attached to the front of the base to gather surrounding information for navigation system.
+
+The second layer is the robot arm and body. Last year, the measurement value of joint angle was unreliable.  So, our arm's control system has been improved by using simple DC motor with an absolute encoder feedback, instead of using BLDC with potentiometer feedback. It helps to determine joint angle, elbow and shoulder, more accurate and be more tolerate to noises. Two Dynamixel MX-28 servos and two High torque Dynamixel RX-64 servo are chosen to built wrist and gripper. Upgrading one of Dynamixel from RX-28 to MX-64 allows gripper to apply more force. By combining all of actuator's motions, the arm can move freely in 6 degrees of freedom.
+
+The final layer is robot head. The robot head has two degrees of freedom similar to human neck motion. R\O DE microphone, Kinect Sensor and Logitech C920 webcam are installed to Robot’s neck which can be used as anthropomorphic head. Due to low image quality of Kinect's RGB camera, webcam is substituted. To acquire the projection between webcam and Kinect axis, normal camera calibration algorithm does not work properly because of noisy depth data. Problem is solved by finding the transformation between webcam and Kinect's RGB first. Then it is biased with a constant distance value between depth sensor and Kinect's RGB camera which is much easier to do the calibration.
 
 \begin{figure}
 \centering
@@ -150,10 +153,10 @@ In this year, perception and manipulation are our main focuses. Especially, obje
 This year, SKUBA@home team is consist of this following members:
 \begin{itemize}
 \item Supervisor: Kanjanapan Sukvichai
-\item Team Leader: Thanakorn Panyapiang
-\item Computer Engineering: Krit Chaiso, Jaktip Yodsri, Tachin Srisombat, and Tisana Kitsahawong
-\item Electrical Engineering: Teeratath Ariyachartphadungkit, Suppawit Inhorm
-\item Mechanical Engineering: Sutinai Tanalerkchai
+\item Team Leader: Kandith Wongsuwan
+\item Computer Engineering: Krit Chaiso, Jaktip Yodsri, Nut Kaewnak, Udom Chaowanakosol, Thanakorn Panyapiang, Tachin Srisombat, and Tisana Kitsahawong
+\item Electrical Engineering: Konlayut Songkrasin, Pasuk Yodpanun, Teeratath Ariyachartphadungkit, and Suppawit Inhorm
+\item Mechanical Engineering: Tanakrit Techadejworaphun, Vasuwat Kittiwangchai, and Sutinai Tanalerkchai
 \end{itemize}
 
 \begin{thebibliography}{4}
