@@ -71,13 +71,24 @@ Software system of our robot is divided into many modules with specific function
 
 When \textit{decision layer} send command to robot, \textit{Control layer} will interpret those commands into lower-level actions by using path planning algorithms. Furthermore, the layer also controls robot manipulator with precision.
 
-\subsection{Face Recognition System}
+\subsection{Face Recognition}
 
-Face recognition is basic ability for service robot to learn and classify human, such as, Serving meal and beverage. For this purpose, the robot has to memorize who is the owner of the order. Approach to face recognition, 
+Face recognition is basic ability for service robot to learn and classify human, such as, Serving meal and beverage. For this purpose, the robot has to memorize person who is the owner of the order. Due to complexity of the old face recognition algorithm, Elastic Bunch Graph Matching (EBGM), stacked spare autoencoder, deep learning technique, is used to solve this complexity. General stacked autoencoder is a neural network which contains two types of layers, autoencoder layer and logistic regression layer. Autoencoder layer is neural network with sparse constraint which transform data into feature space. And logistic regression layer is general neural network which classify the feature vector into a class.
+
+In our face recognition system, stacked autoencoder is consist of one autoencoder layer and one logistic regression layer. There are two steps for training the stacked autoencoder, training autoencoder layer and logistic regression layer. To train autoencoder layer, Backpropagation with sparse penalty and regularization is used. By using input similar to target, this layer has to encode data into low dimension feature space and decode back to original dimension space. The other step is training logistic regression layer. Input of this step is product of autoencoder layer which is feature vector and target output is label of input data. General Backpropagation without any limitation is used to optimize logistic regression layer.
+
+To visualize training result, the weight vectors of first autoencoder layer are extracted. Then reshape vector into images shown in Fig. \ref{fig:rec_face}. Extracted images are autoencoder recognized feature patterns for The ORL Database of Faces, taken by Cambridge University Computer Laboratory. Our algorithm is written in Theano library within GPU boosting\cite{theano_c1}\cite{theano_c2}.
+
+\begin{figure}
+\centering
+\includegraphics[height=5.2cm]{recognize_feature}
+\caption{Images of recognize features.}
+\label{fig:rec_face}
+\end{figure} 
 
 \subsection{Furniture Recognition System}
 
-Furniture recognition is under the subset of object recognition focusing to perceive the existence of furniture. In order to recognize the furniture, Hough voting by using 3D point cloud is applied. First, the point cloud data obtained from Kinect is downsampled by using Uniform Sampling. Second, the Surface Normal Estimation is applied to let the surface normals be consistent with its surrounding. Next, in order to find descriptors, the key points and normals would be aggregated to form the 32 bins histogram. Then, the descriptor matching between the trained data and the given descriptor is performed by using KdTree with FLANN technique in order to find correspondences under a defined threshold. After getting the good matched descriptor, 3D Hough transform is used to cluster the groups of corresponding descriptors as well as to identify the object's category. Next, local Reference Frame and Iterative Closest Point algorithm are applied in order to obtain the precise position of the classified object.
+Furniture recognition is under the subset of object recognition focusing to perceive the existence of furniture. In order to recognize the furniture, Hough voting by using 3D point cloud is applied. First, the point cloud data obtained from Kinect is downsampled by using Uniform Sampling. Second, the Surface Normal Estimation is applied to let the surface normals be consistent with its surrounding. Next, in order to find descriptors, the key points and normals would be aggregated to form the 32 bins histogram. Then, the descriptor matching between the trained data and the given descriptor is performed by using KdTree with FLANN technique in order to find correspondences under a defined threshold. After getting the good matched descriptor, 3D Hough transform is used to cluster the groups of corresponding descriptors as well as to identify the object's category. Next, local Reference Frame and Iterative Closest Point algorithm are applied in order to obtain the precise position of the classified object.\cite{furniture}
 
 \subsection{Data Control System}
 
@@ -99,7 +110,7 @@ The performance of this approach gains us the higher efficiency of both localiza
 
 \subsection{People Detection and Tracking}
 
-To pursue human, robot need two important functions which is human detection and designated person tracking. People detection method use the RGB-D, point cloud, data as the input to acquire people position. Avoiding the problem of detection, such as, consolidation of small crowd and obstruction of body part, sub-clustering of people's head is applied as the representation of each detected person. For each detected person, people location from people detection method is passed to tracking method. This method is implemented based on likelihood data association, online classification using color appearance, and HOG-based motion tracking\cite{pp_detect}. After performing tracking method, sequences of all people position is obtained. Results of our people detection and tracking module is shown in Fig.\ref{fig:people_detection}.
+To pursue human, robot need two important functions which is human detection and designated person tracking. People detection method use the RGB-D, point cloud, data as the input to acquire people position. Avoiding the problem of detection, such as, consolidation of small crowd and obstruction of body part, sub-clustering of people's head is applied as the representation of each detected person. For each detected person, people location from people detection method is passed to tracking method. This method is implemented basrudued on likelihood data association, online classification using color appearance, and HOG-based motion tracking\cite{pp_detect}. After performing tracking method, sequences of all people position is obtained. Results of our people detection and tracking module is shown in Fig.\ref{fig:people_detection}.
 
 \begin{figure}
 \centering
@@ -112,13 +123,11 @@ To pursue human, robot need two important functions which is human detection and
 
 \subsection{Motor Control System}
 
-Motor control system is composed of a collection of embedded controllers which executes the low level motor control loop, communication and debugging. First controller is base motor controller. The motor controller, increment quadrature decoder, PWM generation and onboard serial interfaces are implemented using FPGA. The PI controller is employed to achieve each wheel velocity. And the communication between controller and computer is established by using RS232. Furthermore, there is different controller to control arm motor. To interact with it, RS485 standard is selected and build in to the controller. For convenient usage, second controller also have PID-Torque control, torque limitation and orientation adjustment. 
+Control system is separated into two modules.The first module is base controller. Base controller uses FPGA embedded board to handle wheels. To operate the velocity of each wheel, the PI feedback controller is employed. The Hall sensors from every wheels are used to generate the feedback. And the communication between FPGA and computer is established by using RS232. The second module is arm controllers. Arm controllers use custom embedded board to handle DC motors for increase effort of arms. To manage its velocity and position, PID controller is employed. For precise movement, absolute encoders are used to read the arm position for apply in the PID Controller. The third module is a wrist motion controllers. For precise rotations, dynamixel servo motors are used. The connection between arm modules and computer are interacted within RS485.
 
 \subsection{Localization and Path Planning}
 
-Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. To serve localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map which is statically or dynamically construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
-
-The static and dynamic map is acquired by using \textit{hector\_mapping} package within \textit{hector\_slam} stack. This package minimum requires laser length finder data. And it quickly constructs an occupancy grid map by performing laser beam matching using Gauss-Newton approach\cite{hector_slam}. The result of \textit{hector\_mapping} is shown in Fig.\ref{fig:hector}.
+Adaptive Monte Carlo Localization system (AMCL), provided by \textit{navigation} stack, is used for robot localization. To serve localization algorithm, Hokuyo laser length finder which acquires environmental data is attached to the robot. Additionally, the robot odometry information is also considered as one input information to localization algorithm. Another input is the known map, shown in Fig.\ref{fig:hector}, which is statically or dynamically construct. From previously describe input, AMCL which is a particle filter localization system accurately estimates position and orientation of the robot.
 
 \begin{figure}
 \centering
@@ -153,13 +162,19 @@ This year, SKUBA@home team is consist of this following members:
 \begin{itemize}
 \item Supervisor: Kanjanapan Sukvichai
 \item Team Leader: Kandith Wongsuwan
-\item Computer Engineering: Krit Chaiso, Jaktip Yodsri, Nut Kaewnak, Udom Chaowanakosol, Thanakorn Panyapiang, Tachin Srisombat, and Tisana Kitsahawong
-\item Electrical Engineering: Konlayut Songkrasin, Pasuk Yodpanun, Teeratath Ariyachartphadungkit, and Suppawit Inhorm
+\item Computer Engineering: Krit Chaiso, Jaktip Yodsri, Phatthawipha Jeamburanakul, Mukda Teeralertpanich, Nut Kaewnak, Udom Chaowanakosol, Thanakorn Panyapiang, Tachin Srisombat, and Tisana Kitsahawong
+\item Electrical Engineering: Konlayut Songkrasin, Pasuk Yodpanun, Teeratath Ariyachartphadungkit, Suppawit Inhorm, and Patcharapon Pimpa
 \item Mechanical Engineering: Tanakrit Techadejworaphun, Vasuwat Kittiwangchai, and Sutinai Tanalerkchai
 \end{itemize}
 \begin{thebibliography}{4}
 
 \bibitem{con_arm} T. Ariyachartphadungkit and K. Sukvichai, Development of an Embedded BLDC motor controller using RS485 standard, 2013.
+
+\bibitem{theano_c1}F. Bastien, P. Lamblin, R. Pascanu, J. Bergstra, I. Goodfellow, A. Bergeron, N. Bouchard, D. Warde-Farley and Y. Bengio. Theano: new features and speed improvements. NIPS 2012 deep learning workshop.
+
+\bibitem{theano_c2}J. Bergstra, O. Breuleux, F. Bastien, P. Lamblin, R. Pascanu, G. Desjardins, J. Turian, D. Warde-Farley and Y. Bengio. Theano: A CPU and GPU Math Expression Compiler. Proceedings of the Python for Scientific Computing Conference (SciPy) 2010. June 30 - July 3, Austin, TX
+
+\bibitem{furniture}F. Tombari and L. Di Stefano, Object recognition in 3D scenes with occlusions and clutter by Hough voting, 4th Pacific-Rim Symposium on Image and Video Technology, 2010.
 
 \bibitem{rudu.thesis} Radu B. Rusu, 
 Semantic 3D Object Maps for Everyday Manipulation in Human Living Environments, Germany, 2009.
