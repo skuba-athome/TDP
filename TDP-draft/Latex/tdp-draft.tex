@@ -47,7 +47,7 @@ SKUBA@home was established in 2011. In 2012, SKUBA@home made the first participa
 
 In this year, we mainly emphasized on robot's perception. And, there are three major improvements on our robot's software components. First, face recognition system is reimplemented using deep learning approach, currently popular technique in machine learning. Second, furniture recognition system is purposed to enlarge the diversity of robot's perception. And, the final component is data control system which improves the effectiveness of perception as well as the development process. It handles the data storing and retrieving for other systems using database software.
 
-The next section will explain about our robot mechanical and electrical design. In section 3, software architecture, face recognition with deep learning approach and methodology of furniture recognition are explained. Section 4 explain is about controlling robot movement, such as, motor control component and new manipulator handle component. Finally in the last section, we will present the conclusion.
+The next section will explain about our robot mechanical, electrical design and calibration technique. In section 3, software architecture, face recognition with deep learning approach, methodology of furniture recognition and data control system are explained. Section 4 explains about controlling robot movement, such as, motor control and manipulator component. Finally in the last section, we will present the conclusion.
 
 \section{Robot Hardware}
 
@@ -71,11 +71,14 @@ When \textit{decision layer} send command to robot, \textit{Control layer} will 
 
 \subsection{Face Recognition System}
 
-Face recognition is basic ability for service robot to learn and classify human, such as, Serving meal and beverage. For this purpose, the robot has to memorize who is the owner of the order. Approach to face recognition, Elastic Bunch Graph Matching (EBGM) algorithm is chosen because of robustness to oriented variation\cite{face_reg}. First part of the algorithm is extracting face bunch graph by using predetermine facial landmarks. When receive the graph, each node is labelled by Gabor wavelet transform. In order to complete recognition task, it compares face graphs by using elastic matching. Finally, result of matching is clarified to be result of recognition module.
+Face recognition is basic ability for service robot to learn and classify human, such as, Serving meal and beverage. For this purpose, the robot has to memorize who is the owner of the order. Approach to face recognition, 
 
 \subsection{Furniture Recognition System}
 
+Furniture recognition is under the subset of object recognition focusing to perceive the existence of furniture. In order to recognize the furniture, Hough voting using 3D point cloud is applied. First, the point cloud data obtained from Kinect is downsampled using Uniform Sampling. Second, the Surface Normal Estimation is applied to let the surface normals be consistent with its surrounding. Next, in order to find descriptors, the key points and normals would be aggregated to form the 32 bins histogram. Then, the descriptor matching between the trained data and the given descriptor is performed using KdTree with FLANN technique to find correspondences under a defined threshold. After getting the good matched descriptor, 3D Hough transform is used to cluster the groups of corresponding descriptors as well as to identify the object's category. Next, local Reference Frame and Iterative Closest Point algorithm are applied in order to obtain the precise position of the classified object.
+
 \subsection{Data Control System}
+
 
 \subsection{Object Recognition}
     
