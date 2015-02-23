@@ -20,12 +20,11 @@
 \begin{document}
 
 \title{SKUBA 2015 Team Description}
-\author{Kanjanapan Sukvichai
-\and Krit Chaiso
+\author{Krit Chaiso
 \and Jaktip Yodsri
 \and Kandith Wongsuwan
 \and Mukda Teeralertpanich
-\and Konlayut Songkrasin
+\and Konlayut Songkrasin \and Kanjanapan Sukvichai
 }
 
 \institute{ Faculty of Engineering, Kasetsart University\\
@@ -37,24 +36,24 @@
 \maketitle
 
 \begin{abstract}
-This paper briefly describe software architecture and hardware design of SKUBA, domestic service robot team from Kasetsart University, Thailand, in order to participate in Robocup@Home 2014. Our robot hardware doesn't have major change except the gripper that was redesigned to deal with object slip issue we encounter from previous Robocup. The research this year focus on speech recognition and object recognition which are our main problems from last year competition. This year, we'll evaluate our new techniques by using contest environment.
+This paper briefly describe software architecture and hardware design of SKUBA robot system, domestic service robot team from Kasetsart University, Thailand, in order to participate in Robocup@Home 2015. Our robot hardware doesn't have major change except the gripper that was redesigned in order to deal with object slippage that we encounter from previous Robocup. Robot wheels are redesigned in order to obtain the more precise motion. The research this year focus on data control system, deep learning for face detection, and furniture recognition which are our main problems from last year competition. This year, we'll evaluate our new techniques by using contest environment.
 \end{abstract}
 
 \section{Introduction}
 
 SKUBA@home was established in 2011. In 2012, SKUBA@home made the first participation in Robocup Japan Open 2012 and made the way through finalist. Furthermore, SKUBA@home joined the World Robocup 2012 in Mexico and reach 2nd stage as we anticipated. We built the 2nd version robot in order to perform in the Robocup Japan Open 2013, Tokyo, and Robocup@home 2013, Eindhoven. In last year competition at Fukuoka, Robocup Japan Open 2014, we managed to archive the technical challenge reward.
 
-In this year, we mainly emphasized on robot's perception. And, there are three major improvements on our robot's software components. First, face recognition module is reimplemented using deep learning approach, currently popular technique in machine learning area. Second, furniture recognition is purposed to enlarge the diversity of robot's perception. This component provide information about surrounding furniture, such as, tables and chairs. And, the final component is data control system which improves the effectiveness of perception as well as the development process. It handles the data storing and retrieving for other systems using database software.
+In this year, we mainly emphasized on robot's perception. There are three major improvements on our robot's software components. First, face recognition module is reimplemented using deep learning approach, which is currently popular technique in machine learning area. Second, furniture recognition is purposed to enlarge the diversity of robot's perception. This component provide information about surrounding furniture, such as, tables and chairs. And, the final component is data control system which improves the effectiveness of perception as well as the development process. It handles the data storing and retrieving for other systems using database software.
 
-The next section will explain about our robot mechanical, electrical design and calibration technique. In section 3, software architecture, face recognition with deep learning approach, methodology of furniture recognition and data control system are explained. Section 4 explains about controlling robot movement, such as, motor control and manipulator component. Finally in the last section, we will present the conclusion.
+The next section will explain about our robot mechanical, electrical design and calibration technique. In section 3, software architecture, face recognition with deep learning approach, methodology of furniture recognition and data control system are explained. Section 4 explains about controlling robot motion, such as, wheel and manipulator control. Finally in the last section, we will present the conclusion.
 
 \section{Robot Hardware}
 
-This year, the SKUBA@Home has been redesigned to fix the hardware condition. And we keep using three layers platform. The first layer, robot base layer, consists of four 6$''$ mecanum wheels. Because of robot  movement problem and annoying sound, the wheel's diameter is diminished from last year to be more precise in movement, less mechanical slip and less sound production. Each of them is driven by Maxon Brushless DC (BLDC) Motor combined with planetary gear-head of 1:36 gear ratio and FPGA embedded is chosen to control 4 motors synchronously. The Hokuyo laser length finder (URG-04LX-UG01) is attached to the front of the base to gather surrounding information for navigation system.
+This year, the SKUBA@Home has been redesigned in order to improve the robot's hardware performance. We keep using three layers platform. The first layer, robot base layer, consists of four 6$''$ aluminum mecanum wheels. Because of robot motion issue, wheel vibration and annoying sound, therefore, the wheel's diameter is diminished from last year in order to make a robot achieve a precise movement, less mechanical slip and less vibrating sound. Each of them is driven by Maxon Brushless DC (BLDC) Motor combined with planetary gear-head of 1:36 gear ratio and FPGA embedded is chosen to be a main controller for 4 motors synchronously. The Hokuyo laser length finder (URG-04LX-UG01) is attached to the front of the base to gather surrounding information for navigation system.
 
-The second layer is the robot arm and body. Last year, the measurement value of joint angle was unreliable.  So, our arm's control system has been improved by using simple DC motor with an absolute encoder feedback, instead of using BLDC with potentiometer feedback. It helps to determine joint angle, elbow and shoulder, more accurate and be more tolerate to noises. Two Dynamixel MX-28 servos and two High torque Dynamixel RX-64 servo are chosen to built wrist and gripper. Upgrading one of Dynamixel from RX-28 to MX-64 allows gripper to apply more force. By combining all of actuator's motions, the arm can move freely in 6 degrees of freedom.
+The second layer is the robot arm and body. Last year, the measurement value of joint's angle was unreliable.  So, our arm's control system has been improved by using simple DC motor with an absolute encoder feedback, instead of using BLDC with potentiometer feedback. It helps to determine the joint angle, elbow and shoulder correctly and has more tolerate to noises. Two Dynamixel MX-28 servos and two High torque Dynamixel RX-64 servo are chosen to build a wrist and a gripper. Upgrading one of Dynamixel from RX-28 to MX-64 allows gripper to apply more force to make a tight grab. By combining all of actuator's motions, the arm can move freely in 6 degrees of freedom.
 
-The final layer is robot head. The robot head has two degrees of freedom similar to human neck motion. R\O DE microphone, Kinect Sensor and Logitech C920 webcam are installed to Robot’s neck which can be used as anthropomorphic head. Due to low image quality of Kinect's RGB camera, webcam is substituted. To acquire the projection between webcam and Kinect axis, normal camera calibration algorithm does not work properly because of noisy depth data. Problem is solved by finding the transformation between webcam and Kinect's RGB first. Then it is biased with a constant distance value between depth sensor and Kinect's RGB camera which is much easier to do the calibration.
+The final layer is robot head. The robot head has two degrees of freedom similar to human neck motion. R\O DE microphone, Kinect Sensor and Logitech C920 HD webcam are installed to Robot’s neck which can be used as anthropomorphic head. Due to low image quality of Kinect's RGB camera, HD webcam is substituted. To acquire the projection between webcam and Kinect axis, normal camera calibration algorithm does not work properly because of noisy depth data. Problem is solved by finding the transformation between webcam and Kinect's RGB first. Then it is biased with a constant distance value between depth sensor and Kinect's RGB camera which is much easier to do the calibration.
 
 \begin{figure}
 \centering
@@ -78,14 +77,14 @@ Face recognition is basic ability for service robot to learn and classify human,
 
 \subsection{Furniture Recognition System}
 
-Furniture recognition is under the subset of object recognition focusing to perceive the existence of furniture. In order to recognize the furniture, Hough voting using 3D point cloud is applied. First, the point cloud data obtained from Kinect is downsampled using Uniform Sampling. Second, the Surface Normal Estimation is applied to let the surface normals be consistent with its surrounding. Next, in order to find descriptors, the key points and normals would be aggregated to form the 32 bins histogram. Then, the descriptor matching between the trained data and the given descriptor is performed using KdTree with FLANN technique to find correspondences under a defined threshold. After getting the good matched descriptor, 3D Hough transform is used to cluster the groups of corresponding descriptors as well as to identify the object's category. Next, local Reference Frame and Iterative Closest Point algorithm are applied in order to obtain the precise position of the classified object.
+Furniture recognition is under the subset of object recognition focusing to perceive the existence of furniture. In order to recognize the furniture, Hough voting by using 3D point cloud is applied. First, the point cloud data obtained from Kinect is downsampled by using Uniform Sampling. Second, the Surface Normal Estimation is applied to let the surface normals be consistent with its surrounding. Next, in order to find descriptors, the key points and normals would be aggregated to form the 32 bins histogram. Then, the descriptor matching between the trained data and the given descriptor is performed by using KdTree with FLANN technique in order to find correspondences under a defined threshold. After getting the good matched descriptor, 3D Hough transform is used to cluster the groups of corresponding descriptors as well as to identify the object's category. Next, local Reference Frame and Iterative Closest Point algorithm are applied in order to obtain the precise position of the classified object.
 
 \subsection{Data Control System}
 
 
 \subsection{Object Recognition}
     
-To improve the precision of recognition module, localization approach is enhanced by using both RGB image and depth image together. First, depth information from OpenNI library is applied for extracting objects from the background scene using Euclidean Clustering Extraction\cite{ece}\cite{rudu.thesis}. Additionally, there are some explicit constrains, e.g., table plane boundary and manipulator work space limitation, to distinguish the cloud that is definitely not the interested object, such as, the object that are beneath the table. After computing the centroid of extracted point cloud, object's border is transformed using the focal length equation from 3D space to RGB domain. From object's border, the segmented image is obtained. In image domain, descriptors of the segmented image are extracted using Speeded-Up Robust Features(SURF), and can be classified by a recognition process.
+To improve the precision of recognition module, localization approach is enhanced by using both RGB image and depth image together. First, depth information from OpenNI library is applied for extracting objects from the background scene using Euclidean Clustering Extraction\cite{rudu.thesis}. Additionally, there are some explicit constrains, e.g., table plane boundary and manipulator work space limitation, to distinguish the cloud that is definitely not the interested object, such as, the object that are beneath the table. After computing the centroid of extracted point cloud, object's border is transformed using the focal length equation from 3D space to RGB domain. From object's border, the segmented image is obtained. In image domain, descriptors of the segmented image are extracted using Speeded-Up Robust Features(SURF), and can be classified by a recognition process.
 
 Another developed process is a recognition process. Initially, the extracted descriptors are clustered using K-means clustering. Next, the histogram for each object is created by counting the number of descriptors in each cluster. Finally, the set of histograms are used as learning instance for SVM method which is supervised learning for classification the object category\cite{obj_rec}.
 
@@ -132,7 +131,7 @@ To achieve path planning, there is \textit{move\_base} node in \textit{navigatio
 
 \subsubsection{Odometry Estimation Module}
 
-This module helps to minimize the mean square error of the non-perfect sensor measurement originated from wheel slippage, dynamic surrounded environment and IMU drift over time. Using the laser scanner to estimate the change of position by laser scan matching technique can solve the wheel slip problem while facing with high sensitivity and dynamic environment. Point-to-line distance Iterative Closed Point (ICP)\cite{icp1}\cite{icp2} method is used to be based algorithm for laser scan matching.
+This module helps to minimize the mean square error of the non-perfect sensor measurement originated from wheel slippage, dynamic surrounded environment and IMU drift over time. Using the laser scanner to estimate the change of position by laser scan matching technique can solve the wheel slip problem while facing with high sensitivity and dynamic environment. Point-to-line distance Iterative Closed Point (ICP) method is used to be based algorithm for laser scan matching.
 
 To perform estimation module, Kalman filter which consist of two steps is used. First, the Kalman's observation step calculates difference between output from last prediction and actual position which combine laser scan matching and wheels' speed together. Next, the Kalman's prediction step predicts new output by compensate error from previous step and IMU data\cite{odom}.
 
@@ -146,7 +145,7 @@ For the manipulation system, two distinct methods are developed for serving vari
 
 \section{Conclusion}
 
-In this year, perception and manipulation are our main focuses. Especially, object recognition and voice system are developed to be more stable, precise and robust. We'll improve performance of dynamic localization and mapping as future work. We gained experiences from RoboCup@Home competition 2013 and discovered development idea. For Robocup@Home 2014 in Brazil, our robot are more autonomous and ready for engage in competition. We hope that our robot team will perform better in RoboCup than the previous year, and we are looking forward to sharing experiences with other great teams around the world.
+In this year, perception and manipulation are our main focuses. Data control system, deep learning for face detection, and furniture recognition are our main focuses for our software system's improvement. Robot hardware had been modified and redesigned in order to achieve a superior performance by encountering the hardware parts that cause the robot motion and manipulator issues. We gained experiences from RoboCup@Home Japan Open competition 2014 and discovered development idea. For Robocup@Home 2015 in China, our robot are more autonomous and ready for engage in competition. We hope that our robot team will perform better in RoboCup than the previous year, and we are looking forward to sharing experiences with other great teams around the world.
 
 \section*{Team Member}
 
@@ -158,13 +157,9 @@ This year, SKUBA@home team is consist of this following members:
 \item Electrical Engineering: Konlayut Songkrasin, Pasuk Yodpanun, Teeratath Ariyachartphadungkit, and Suppawit Inhorm
 \item Mechanical Engineering: Tanakrit Techadejworaphun, Vasuwat Kittiwangchai, and Sutinai Tanalerkchai
 \end{itemize}
-
 \begin{thebibliography}{4}
 
 \bibitem{con_arm} T. Ariyachartphadungkit and K. Sukvichai, Development of an Embedded BLDC motor controller using RS485 standard, 2013.
-
-\bibitem{ece} S. Tuerker. Euclidean Cluster Extraction.\\
-\url{http://pointclouds.org/documentation/tutorials/cluster_extraction.php}.
 
 \bibitem{rudu.thesis} Radu B. Rusu, 
 Semantic 3D Object Maps for Everyday Manipulation in Human Living Environments, Germany, 2009.
@@ -176,10 +171,6 @@ Semantic 3D Object Maps for Everyday Manipulation in Human Living Environments, 
 \bibitem{pp_detect} M. Munaro, F. Basso and E. Menegatti. Tracking people within groups with RGB-D data. In Proceedings of the International Conference on Intelligent Robots and Systems (IROS) 2012, Vilamoura (Portugal), 2012.
 
 \bibitem{hector_slam} S. Kohlbrecher and J. Meyer and O. von Stryk and U. Klingauf. A Flexible and Scalable SLAM System with Full 3D Motion Estimation, in Proc. IEEE International Symposium on Safety, Security and Rescue Robotics (SSRR), November, 2011.
-
-\bibitem{icp1} A. Censi, An ICP variant using point-to-line metric, In Proceedings of the 2008 IEEE International Conference on Robotics and Automation (2008).
-
-\bibitem{icp2} A. Censi, An accurate closed-form estimate of ICP's covariance, In Proceedings of the 2007 IEEE International Conference on Robotics and Automation (2007).
 
 \bibitem{odom} B. Pholpoke and K. Sukvichai. Real Time People Tracking and Collision Avoidance using Sensors Fusion for an Indoor Omni-directional Wheels Mobile Robot, 2013.
 
