@@ -1,0 +1,19 @@
+The TDP must be based on the official league TDP template and must contain the following information:
+ 
+    Description of the hardware and software including a list of integrated
+    externally available components (including commercial products, freeware, Open Source, etc.)
+    Innovative technology and scientific contribution
+    Photo(s) of the robot
+    Focus of research/research interests
+    Re-usability of the system for other research groups
+    Applicability of the robot in the real world
+
+ The TDP goes into detail about the technical and scientific approach, but the website should be designed for a broader audience.
+
+The length of the TDP is limited to 8 pages. Please use the same Springer LNAI format used in the RoboCup Symposium submissions.
+
+[Link: http://www.springer.com/computer/lncs?SGWID=0-164-6-793341-0]
+  
+You may download a template for the TDP from
+  
+[Link: https://github.com/RCAtHome2016/TDPTemplate.git]
